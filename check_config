@@ -1,0 +1,5 @@
+#!/bin/sh
+QTILEPATH="$HOME/dev/qtile"
+source $QTILEPATH/venv/bin/activate
+export PYTHONPATH="$QTILEPATH"
+exec python config.py
