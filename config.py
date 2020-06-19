@@ -39,6 +39,8 @@ APP_FILES='nautilus'
 APP_WEB='firefox'
 USE_CUSTOM_KEYS=True # set to False to run ./gen-keybinding-img, current keys are for French azerty
 
+mod = "mod4"
+
 # Action functions {{{
 
 @lazy.function
@@ -85,11 +87,8 @@ def goToUrgent(qtile):
             break
 # }}}
 
-mod = "mod4"
-
-# nice run menu:
+# NOTE: nice run menus:
 #/usr/bin/rofi -modi run,drun -show drun run
-# nice windows + ssh + commands
 # rofi -show combi -modi combi -combi-modi window,run,ssh
 
 keys = [ # {{{
@@ -396,10 +395,6 @@ focus_on_window_activation = "smart"
 # XXX JAVA COMPAT:
 wmname = "LG3D"
 # }}}
-
-@hook.subscribe.screen_change
-def restart_on_randr(qtile, ev):
-    qtile.cmd_restart()
 
 # Auto move windows to groups {{{
 dynamic_names = {
