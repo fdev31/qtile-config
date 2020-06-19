@@ -146,8 +146,8 @@ keys = [ # {{{
     Key([mod, "control"], "Left", lazy.layout.flip_left()),
     Key([mod, "control"], "Right", lazy.layout.flip_right()),
 
-    Key([mod, "mod1", "shift"], "Up", lazy.window.up_opacity()),
-    Key([mod, "mod1", "shift"], "Down", lazy.window.down_opacity()),
+    Key(["control", mod, "shift"], "Up", lazy.window.up_opacity()),
+    Key(["control", mod, "shift"], "Down", lazy.window.down_opacity()),
 
     # Switch window focus to other pane(s) of stack
     Key([mod], "Tab", lazy.layout.next()),
