@@ -1,0 +1,7 @@
+#!/bin/sh
+repo=$(pwd)
+cd ~/dev/qtile/
+
+rm $repo/images/*.png
+./scripts/gen-keybinding-img -c $repo/config.py -o $repo/images/
+
