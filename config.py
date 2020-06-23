@@ -259,6 +259,20 @@ groups.append(
 
 groups.append(
     ScratchPad(
+        "volume", [
+            DropDown(
+                "pavucontrol",
+                "/usr/bin/pavucontrol",
+                opacity=0.88,
+                height=0.95,
+                width=0.60
+            ),
+        ]
+    )
+)
+
+groups.append(
+    ScratchPad(
         "CPE", [
             DropDown(
                 "journal",
@@ -293,9 +307,7 @@ groups.append(
 
 keys.extend([
     Key([mod], "a", lazy.group["scratchpad"].dropdown_toggle("term")),
-    ])
-
-keys.extend([
+    Key([mod], "v", lazy.group["volume"].dropdown_toggle("pavucontrol")),
     Key([mod], "m", lazy.group["CPE"].dropdown_toggle("term"), lazy.group["CPE"].dropdown_toggle("vrcu"), lazy.group["CPE"].dropdown_toggle("journal")),
     ])
 
