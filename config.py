@@ -37,6 +37,7 @@ from libqtile import extension # }}}
 
 APP_FILES='nautilus'
 APP_WEB='firefox'
+APP_TERM='kitty'
 USE_CUSTOM_KEYS=True # set to False to run ./gen-keybinding-img, current keys are for French azerty
 
 mod = "mod4"
@@ -161,7 +162,7 @@ keys = [ # {{{
     # multiple stack panes
     Key([mod], "BackSpace", lazy.layout.toggle_split()),
     Key([mod, "shift"], "BackSpace", lazy.layout.normalize()),
-    Key([mod], "Return", lazy.spawn("kitty")),
+    Key([mod], "Return", lazy.spawn(APP_TERM)),
 
     # Toggle between different layouts as defined below
     Key([mod], "space", lazy.next_layout()),
@@ -210,7 +211,7 @@ group_data = [
             wm_classes=['Zim'],
             ),
         Props(icon="瑩", name="chat",
-            #spawn=["kitty --class Chat ssh cra"], # FIXME: spawns multiple times
+            #spawn=[APP_TERM + " --class Chat ssh cra"], # FIXME: spawns multiple times
             layout="columns",
             key="underscore",
             wm_classes=['Skype', 'Chat'],
@@ -255,7 +256,7 @@ groups.append(
         "scratchpad", [
             DropDown(
                 "term",
-                "/usr/bin/kitty",
+                APP_TERM,
                 opacity=0.88,
                 height=0.55,
                 width=0.80
@@ -283,7 +284,7 @@ groups.append(
         "CPE", [
             DropDown(
                 "journal",
-                "/usr/bin/kitty sstb journalctl -o cat -fxn -u jsapp",
+                APP_TERM + " sstb journalctl -o cat -fxn -u jsapp",
                 opacity=0.88,
                 y=0.0,
                 height=0.499,
@@ -292,7 +293,7 @@ groups.append(
             ),
             DropDown(
                 "term",
-                "/usr/bin/kitty sstb",
+                APP_TERM + " sstb",
                 opacity=0.88,
                 y=0.5,
                 height=0.499,
@@ -301,7 +302,7 @@ groups.append(
             ),
             DropDown(
                 "vrcu",
-                "/usr/bin/kitty vrcu",
+                APP_TERM + " vrcu",
                 opacity=0.88,
                 x=0.9,
                 height=1.0,
