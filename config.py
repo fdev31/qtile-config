@@ -402,7 +402,12 @@ floating_layout = layout.Floating(float_rules=[
     {'wname': 'pinentry'},  # GPG key password entry
     {'wmclass': 'ssh-askpass'},  # ssh-askpass
 ])
-auto_fullscreen = False
+auto_fullscreen = True
+
+no_auto_fullscreen_windows = (
+         Match(wm_class=['Navigator', 'google-chrome']),
+        )
+
 focus_on_window_activation = "smart"
 
 # XXX JAVA COMPAT:
@@ -427,7 +432,9 @@ def hook_move_to_group(client):
             if props.wm_class is None or props.wm_class in wm_classes:
                 client.togroup(props.group)
                 break
-
+# }}}
+# XXX/TODO: move to matches=[...]
+# {{{
 automoved_apps = {
         'skype'              : groups_by_id.chat.name,
         'Blender'            : groups_by_id.gfx.name,
