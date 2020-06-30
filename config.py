@@ -96,7 +96,7 @@ keys = [ # {{{
     Key([mod], "r", raiseFloatingWindows),
     Key([mod], "o", moveToNextScreen),
     Key([mod], "p", lazy.next_screen()),
-    Key([mod], "e", lazy.spawn('rofi -p "Go to" -show combi -modi combi -combi-modi window,ssh,run')),
+    Key([mod], "e", lazy.spawn('rofi -p "Go to" -show combi -modi combi -combi-modi window')),
     Key([mod], "y", lazy.spawn('mymenu.sh')),
     Key([mod], "d", lazy.spawn('doNotDisturb')),
     Key([mod], "l", lazy.spawn('mate-screensaver-command -l')),
@@ -199,24 +199,30 @@ group_data = [
             ),
         Props(icon="黎", name="mail",
             key="parenleft",
+            wm_classes=['Evolution'],
             ),
         Props(icon="更", name="gfx",
             key="minus",
+            wm_classes=['Blender'],
             ),
         Props(icon="綠", name="rec",
             key="egrave",
+            wm_classes=['Zim'],
             ),
         Props(icon="瑩", name="chat",
-            spawn=["kitty ssh cra", "skypeforlinux"],
+            spawn=["kitty --class Chat ssh cra"], # FIXME: spawns multiple times
             layout="columns",
             key="underscore",
+            wm_classes=['Skype', 'Chat'],
             ),
         Props(icon="蓼", name="media",
             key="ccedilla",
+            wm_classes=['Popcorn-Time'],
             ),
         Props(icon="亮", name="logs",
             layout="columns",
             key="agrave",
+            wm_classes=['TermLog'],
             ),
         ]
 # }}}
@@ -229,6 +235,7 @@ for i, group in enumerate(group_data):
             label="%s%s"%((str(i+1))[-1], group.icon) if group.key else group.icon,
             layout=group.layout or "bsp",
             spawn=group.spawn,
+            matches=[Match(wm_class=group.wm_classes)] if group.wm_classes else None,
             )
     groups_by_id[group.name] = g;
     groups.append(g)
@@ -276,7 +283,7 @@ groups.append(
         "CPE", [
             DropDown(
                 "journal",
-                "/usr/bin/kitty sstb journalctl -fxn -u jsapp",
+                "/usr/bin/kitty sstb journalctl -o cat -fxn -u jsapp",
                 opacity=0.88,
                 y=0.0,
                 height=0.499,
@@ -432,27 +439,5 @@ def hook_move_to_group(client):
             if props.wm_class is None or props.wm_class in wm_classes:
                 client.togroup(props.group)
                 break
-# }}}
-# XXX/TODO: move to matches=[...]
-# {{{
-automoved_apps = {
-        'skype'              : groups_by_id.chat.name,
-        'Blender'            : groups_by_id.gfx.name,
-        'Popcorn-Time'       : groups_by_id.media.name,
-        'TermLog'            : groups_by_id.logs.name,
-        'www.flowdock.com'   : groups_by_id.chat.name,
-        'horizon4.slack.com' : groups_by_id.chat.name,
-        'zim'                : groups_by_id.rec.name,
-        'Evolution'          : groups_by_id.mail.name,
-        }
 
-@hook.subscribe.client_new
-def hook_move_to_group(client):
-    for wm_class in client.window.get_wm_class():
-        group = automoved_apps.get(wm_class, None)
-        if group:
-            client.togroup(group)
-            break
-
-# }}}
-# vim:fdm=marker
+# }}} vim:fdm=marker
