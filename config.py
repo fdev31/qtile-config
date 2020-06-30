@@ -210,7 +210,7 @@ group_data = [
             wm_classes=['Zim'],
             ),
         Props(icon="瑩", name="chat",
-            spawn=["kitty --class Chat ssh cra"], # FIXME: spawns multiple times
+            #spawn=["kitty --class Chat ssh cra"], # FIXME: spawns multiple times
             layout="columns",
             key="underscore",
             wm_classes=['Skype', 'Chat'],
