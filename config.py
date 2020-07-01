@@ -185,7 +185,7 @@ groups_by_id = Props()
 
 #ICONS: 什擄來洛 烙落 酪 駱藍燎亮咽 溜 琉 阮蓼切盧
 
-group_data = [
+group_def = [
         Props(icon="度", name="term",
             key="ampersand",
             ),
@@ -204,7 +204,7 @@ group_data = [
             ),
         Props(icon="更", name="gfx",
             key="minus",
-            wm_classes=['Blender'],
+            wm_classes=['Blender', re.compile('Gimp-.*'), 'Inkscape'],
             ),
         Props(icon="綠", name="rec",
             key="egrave",
@@ -229,7 +229,7 @@ group_data = [
 # }}}
 
 # Groups creation {{{
-for i, group in enumerate(group_data):
+for i, group in enumerate(group_def):
     key = group.key if USE_CUSTOM_KEYS else str(i)[-1]
     g = Group(
             name=group.name,
