@@ -422,7 +422,7 @@ floating_layout = layout.Floating(float_rules=[
 ])
 auto_fullscreen = True
 
-no_auto_fullscreen_windows = (
+auto_fullscreen_exceptions = (
          Match(wm_class=['firefox']),
          Match(wm_class=['google-chrome']),
         )
