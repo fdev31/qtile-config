@@ -94,15 +94,15 @@ def goToUrgent(qtile):
 
 keys = [ # {{{
     # Custom commands
-    Key([mod], "r", raiseFloatingWindows),
-    Key([mod], "o", moveToNextScreen),
-    Key([mod], "p", lazy.next_screen()),
-    Key([mod], "e", lazy.spawn('rofi -p "Go to" -show combi -modi combi -combi-modi window')),
-    Key([mod], "y", lazy.spawn('mymenu.sh')),
-    Key([mod], "d", lazy.spawn('doNotDisturb')),
-    Key([mod], "l", lazy.spawn('mate-screensaver-command -l')),
-    Key([mod, "control"], "l", lazy.spawn('mate-session-save --shutdown-dialog')),
-    Key([mod], "u", goToUrgent),
+    Key([mod], "r", raiseFloatingWindows, desc="raise floating"),
+    Key([mod], "o", moveToNextScreen, desc="move to next screen"),
+    Key([mod], "p", lazy.next_screen(), desc="go to next screen"),
+    Key([mod], "e", lazy.spawn('rofi -p "Go to" -show combi -modi combi -combi-modi window'), desc="window list"),
+    Key([mod], "y", lazy.spawn('mymenu.sh'), desc="shortcuts menu"),
+    Key([mod], "d", lazy.spawn('doNotDisturb'), desc="toggle notifications"),
+    Key([mod], "l", lazy.spawn('mate-screensaver-command -l'), desc="lock screen"),
+    Key([mod, "control"], "l", lazy.spawn('mate-session-save --shutdown-dialog'), desc="Shutdown popup"),
+    Key([mod], "u", goToUrgent, desc='Switch to urgent'),
     Key([mod], "s", lazy.window.toggle_floating()),
     Key([mod], "f", lazy.window.toggle_fullscreen()),
 
@@ -119,17 +119,17 @@ keys = [ # {{{
     Key([mod], "Right", lazy.layout.right()),
 
     # Move to group:
-    Key([mod], "j", lazy.function(moveToGroup, -1)),
-    Key([mod], "k", lazy.function(moveToGroup,1)),
+    Key([mod], "j", lazy.function(moveToGroup, -1), desc="prev group"),
+    Key([mod], "k", lazy.function(moveToGroup,1), desc="next group"),
 
-    Key([mod, "shift"], "j", lazy.function(moveToGroup, -1, True)),
-    Key([mod, "shift"], "k", lazy.function(moveToGroup,1, True)),
+    Key([mod, "shift"], "j", lazy.function(moveToGroup, -1, True), desc="prev used group"),
+    Key([mod, "shift"], "k", lazy.function(moveToGroup,1, True), desc="next used group"),
 
     # move to group + carry window:
-    Key([mod, "mod1"], "j", lazy.function(moveToGroup, -1, False, True)),
-    Key([mod, "mod1"], "k", lazy.function(moveToGroup,1, False, True)),
-    Key([mod, "mod1", "shift"], "j", lazy.function(moveToGroup, -1, True, True)),
-    Key([mod, "mod1", "shift"], "k", lazy.function(moveToGroup,1, True, True)),
+    Key([mod, "mod1"], "j", lazy.function(moveToGroup, -1, False, True), desc="move to prev group"),
+    Key([mod, "mod1"], "k", lazy.function(moveToGroup,1, False, True), desc="move to next group"),
+    Key([mod, "mod1", "shift"], "j", lazy.function(moveToGroup, -1, True, True), desc="move to prev used group"),
+    Key([mod, "mod1", "shift"], "k", lazy.function(moveToGroup,1, True, True), desc="move to next used group"),
 
     # Move windows up or down in current stack
     Key([mod, "mod1"], "Up", lazy.layout.shuffle_up()),
@@ -169,7 +169,7 @@ keys = [ # {{{
     Key([mod], "c", lazy.window.kill()),
 
     Key([mod, "control"], "r", lazy.restart()),
-    Key([mod, "control"], "q", lazy.shutdown()),
+#     Key([mod, "control"], "q", lazy.shutdown()),
 ] # }}}
 
 # Groups definition {{{
