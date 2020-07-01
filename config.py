@@ -259,8 +259,18 @@ groups.append(
                 APP_TERM,
                 opacity=0.88,
                 height=0.55,
+                on_focus_lost_hide=False,
                 width=0.80
             ),
+            DropDown(
+                "qlog",
+                APP_TERM + " tail -f /tmp/qtile-git.log",
+                opacity=0.88,
+                y=0.56,
+                height=0.40,
+                on_focus_lost_hide=False,
+                width=0.80
+            )
         ]
     )
 )
@@ -314,9 +324,9 @@ groups.append(
 )
 
 keys.extend([
-    Key([mod], "a", lazy.group["scratchpad"].dropdown_toggle("term")),
+    Key([mod], "a", lazy.group["scratchpad"].dropdown_toggle("qlog"), lazy.group["scratchpad"].dropdown_toggle("term")),
     Key([mod], "v", lazy.group["volume"].dropdown_toggle("pavucontrol")),
-    Key([mod], "m", lazy.group["CPE"].dropdown_toggle("term"), lazy.group["CPE"].dropdown_toggle("vrcu"), lazy.group["CPE"].dropdown_toggle("journal")),
+    Key([mod], "m", lazy.group["CPE"].dropdown_toggle("vrcu"), lazy.group["CPE"].dropdown_toggle("journal"),lazy.group["CPE"].dropdown_toggle("term")),
     ])
 
 # }}}
