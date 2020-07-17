@@ -427,7 +427,7 @@ auto_fullscreen_exceptions = (
          Match(wm_class=['google-chrome']),
         )
 
-focus_on_window_activation = "smart"
+focus_on_window_activation = "urgent"
 
 # XXX JAVA COMPAT:
 wmname = "LG3D"
