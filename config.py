@@ -323,10 +323,31 @@ groups.append(
     )
 )
 
+def toggleDropDown(qtile, groupname, dropdowns):
+    dd = qtile.groups_map[groupname].dropdowns
+    try:
+        first = dd[dropdowns[0]]
+        displayed = first.visible and first.shown
+    except KeyError:
+        displayed = False
+
+    for name in dropdowns:
+        if displayed:
+            try:
+                dd[name].hide()
+            except KeyError:
+                pass
+        else:
+            try:
+                dd[name].show()
+            except KeyError:
+                qtile.groups_map[groupname].cmd_dropdown_toggle(name)
+    first.window.focus(warp=True)
+
 keys.extend([
-    Key([mod], "a", lazy.group["scratchpad"].dropdown_toggle("qlog"), lazy.group["scratchpad"].dropdown_toggle("term")),
-    Key([mod], "v", lazy.group["volume"].dropdown_toggle("pavucontrol")),
-    Key([mod], "m", lazy.group["CPE"].dropdown_toggle("vrcu"), lazy.group["CPE"].dropdown_toggle("journal"),lazy.group["CPE"].dropdown_toggle("term")),
+    Key([mod], "a", lazy.function(toggleDropDown, "scratchpad", ["qlog", "term"])),
+    Key([mod], "v", lazy.function(toggleDropDown, "volume", ["pavucontrol"])),
+    Key([mod], "m", lazy.function(toggleDropDown, "CPE", ["vrcu", "journal", "term"])),
     ])
 
 # }}}
