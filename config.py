@@ -105,6 +105,7 @@ keys = [ # {{{
     Key([mod], "u", goToUrgent, desc='Switch to urgent'),
     Key([mod], "s", lazy.window.toggle_floating()),
     Key([mod], "f", lazy.window.toggle_fullscreen()),
+    Key([mod], "n", lazy.window.toggle_minimize()),
 
     Key([mod], "t", lazy.spawn(APP_FILES)),
     Key([mod], "w", lazy.spawn(APP_WEB)),
@@ -345,7 +346,7 @@ def toggleDropDown(qtile, groupname, dropdowns):
     first.window.focus(warp=True)
 
 keys.extend([
-    Key([mod], "a", lazy.function(toggleDropDown, "scratchpad", ["qlog", "term"])),
+    Key([mod], "a", lazy.function(toggleDropDown, "scratchpad", ["term", "qlog"])),
     Key([mod], "v", lazy.function(toggleDropDown, "volume", ["pavucontrol"])),
     Key([mod], "m", lazy.function(toggleDropDown, "CPE", ["vrcu", "journal", "term"])),
     ])
