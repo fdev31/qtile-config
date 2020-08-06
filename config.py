@@ -331,6 +331,7 @@ def toggleDropDown(qtile, groupname, dropdowns):
         displayed = first.visible and first.shown
     except KeyError:
         displayed = False
+        first = None
 
     for name in dropdowns:
         if displayed:
@@ -343,7 +344,7 @@ def toggleDropDown(qtile, groupname, dropdowns):
                 dd[name].show()
             except KeyError:
                 qtile.groups_map[groupname].cmd_dropdown_toggle(name)
-    first.window.focus(warp=True)
+    if first: first.window.focus(warp=True)
 
 keys.extend([
     Key([mod], "a", lazy.function(toggleDropDown, "scratchpad", ["term", "qlog"])),
