@@ -215,7 +215,7 @@ group_def = [
             #spawn=[APP_TERM + " --class Chat ssh cra"], # FIXME: spawns multiple times
             layout="columns",
             key="underscore",
-            wm_classes=['Skype', 'Chat'],
+            wm_classes=['Skype', 'Chat', 'Rambox'],
             ),
         Props(icon="蓼", name="media",
             key="ccedilla",
