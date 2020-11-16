@@ -240,15 +240,15 @@ for i, group in enumerate(group_def):
             label="%s%s"%((str(i+1))[-1], group.icon) if group.key else group.icon,
             layout=group.layout or "bsp",
             spawn=group.spawn,
-            matches=[Match(wm_class=group.wm_classes)] if group.wm_classes else None,
+            matches=[Match(wm_class=c) for c in group.wm_classes] if group.wm_classes else None,
             )
     groups_by_id[group.name] = g;
     groups.append(g)
 
-    if group.key:
+    if key:
         keys.extend([
             # mod1 + letter of group = switch to group
-            Key([mod], key, lazy.group[g.name].toscreen()),
+            Key([mod], key, lazy.group[g.name].toscreen(), desc='switching to group '+g.name),
 
             # mod1 + shift + letter of group = switch to & move focused window to group
             Key([mod, "shift"], key, lazy.window.togroup(g.name, switch_group=True)),
@@ -426,41 +426,51 @@ mouse = [
 # Misc / floating {{{
 dgroups_key_binder = None
 dgroups_app_rules = []  # type: List
-main = None
+main = None  # WARNING: this is deprecated and will be removed soon
 follow_mouse_focus = True
 bring_front_click = False
 cursor_warp = False
+
+
 floating_layout = layout.Floating(float_rules=[
-    {'wmclass': 'confirm'},
-    {'wmclass': 'safeeyes'},
-    {'wmclass': 'dialog'},
-    {'wmclass': 'download'},
-    {'wmclass': 'error'},
-    {'wmclass': 'file_progress'},
-    {'wmclass': 'notification'},
-    {'wmclass': 'splash'},
-    {'wmclass': 'toolbar'},
-    {'wmclass': 'confirmreset'},  # gitk
-    {'wmclass': 'makebranch'},  # gitk
-    {'wmclass': 'maketag'},  # gitk
-    {'wname': 'branchdialog'},  # gitk
-    {'wname': 'pinentry'},  # GPG key password entry
-    {'wmclass': 'ssh-askpass'},  # ssh-askpass
+    # Run the utility of `xprop` to see the wm class and name of an X client.
+    Match(wm_type='utility'),
+    Match(wm_type='notification'),
+    Match(wm_type='toolbar'),
+    Match(wm_type='splash'),
+    Match(wm_type='dialog'),
+    Match(wm_class='file_progress'),
+    Match(wm_class='confirm'),
+    Match(wm_class='dialog'),
+    Match(wm_class='download'),
+    Match(wm_class='error'),
+    Match(wm_class='notification'),
+    Match(wm_class='splash'),
+    Match(wm_class='toolbar'),
+    Match(wm_class='confirmreset'),  # gitk
+    Match(wm_class='makebranch'),  # gitk
+    Match(wm_class='maketag'),  # gitk
+    Match(wm_class='ssh-askpass'),  # ssh-askpass
+    Match(title='branchdialog'),  # gitk
+    Match(title='pinentry'),  # GPG key password entry
+    Match(title='safeeyes'),  # GPG key password entry
 ])
 auto_fullscreen = True
 
 auto_fullscreen_exceptions = (
-         Match(wm_class=['firefox']),
-         Match(wm_class=['google-chrome']),
+         Match(wm_class='firefox'),
+         Match(wm_class='google-chrome'),
         )
 
-focus_on_window_activation = "urgent"
+# focus_on_window_activation = "urgent"
+focus_on_window_activation = "smart"
 
 # XXX JAVA COMPAT:
 wmname = "LG3D"
 # }}}
 
 # Auto move windows to groups {{{
+'''
 dynamic_names = {
         re.compile('Slack | .* | Horizon 4.0'): Props(group=groups_by_id.chat.name),
         re.compile('.*OMW - General .* - Flowdock'): Props(group=groups_by_id.chat.name),
@@ -480,3 +490,17 @@ def hook_move_to_group(client):
                 break
 
 # }}} vim:fdm=marker
+
+@hook.subscribe.window_state_change
+def conditional_fullscreen(client, state):
+    for name in client.window.get_wm_class():
+        if name == 'firefox':
+            if 'fullscreen' in state:
+                if not client.fullscreen: # and i_really_dont_want_fullscreen():
+                    state.remove('fullscreen')
+            else:
+                if client.fullscreen: # and i_really_dont_want_fullscreen():
+                    state.append('fullscreen')
+            break
+
+'''
