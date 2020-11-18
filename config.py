@@ -101,7 +101,7 @@ keys = [ # {{{
     Key([mod], "p", lazy.next_screen(), desc="go to next screen"),
     Key([mod], "e", lazy.spawn('rofi -p "Go to" -show combi -modi combi -combi-modi window'), desc="window list"),
     Key([mod], "r", lazy.spawn('mymenu.sh'), desc="shortcuts menu"),
-    Key([mod], "z", lazy.spawn('kupfer'), desc="kupfer"),
+#     Key([mod], "z", lazy.spawn('kupfer'), desc="kupfer"),
     Key([mod], "d", lazy.spawn('doNotDisturb'), desc="toggle notifications"),
     Key([mod], "l", lazy.spawn('mate-screensaver-command -l'), desc="lock screen"),
     Key([mod, "control"], "l", lazy.spawn('mate-session-save --shutdown-dialog'), desc="Shutdown popup"),
@@ -432,7 +432,7 @@ bring_front_click = False
 cursor_warp = False
 
 
-floating_layout = layout.Floating(float_rules=[
+floating_layout = layout.Floating(border_width=0, float_rules=[
     # Run the utility of `xprop` to see the wm class and name of an X client.
     Match(wm_type='utility'),
     Match(wm_type='notification'),
@@ -451,6 +451,7 @@ floating_layout = layout.Floating(float_rules=[
     Match(wm_class='makebranch'),  # gitk
     Match(wm_class='maketag'),  # gitk
     Match(wm_class='ssh-askpass'),  # ssh-askpass
+    Match(wm_class='ulauncher'),  # ssh-askpass
     Match(title='branchdialog'),  # gitk
     Match(title='pinentry'),  # GPG key password entry
     Match(title='safeeyes'),  # GPG key password entry
