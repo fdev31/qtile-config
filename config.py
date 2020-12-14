@@ -457,6 +457,7 @@ floating_layout = layout.Floating(border_width=0, float_rules=[
     Match(title='branchdialog'),  # gitk
     Match(title='pinentry'),  # GPG key password entry
     Match(title='safeeyes'),  # GPG key password entry
+    Match(title=re.compile('Android Emulator - .*')),
 ])
 auto_fullscreen = True
 
