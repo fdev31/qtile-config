@@ -449,6 +449,7 @@ floating_layout = layout.Floating(border_width=0, float_rules=[
     Match(wm_class='notification'),
     Match(wm_class='splash'),
     Match(wm_class='toolbar'),
+    Match(wm_class='evolution-alarm-notify'),
     Match(wm_class='confirmreset'),  # gitk
     Match(wm_class='makebranch'),  # gitk
     Match(wm_class='maketag'),  # gitk
@@ -457,7 +458,7 @@ floating_layout = layout.Floating(border_width=0, float_rules=[
     Match(title='branchdialog'),  # gitk
     Match(title='pinentry'),  # GPG key password entry
     Match(title='safeeyes'),  # GPG key password entry
-    Match(title=re.compile('Android Emulator - .*')),
+    Match(title=re.compile('Android Emulator.*')),
 ])
 auto_fullscreen = True
 
