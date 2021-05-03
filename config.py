@@ -216,9 +216,9 @@ group_def = [
             ),
         Props(icon="瑩", name="chat",
             #spawn=[APP_TERM + " --class Chat ssh cra"], # FIXME: spawns multiple times
-            layout="columns",
+            layout="max",
             key="underscore",
-            wm_classes=['Skype', 'Chat', 'Rambox'],
+            wm_classes=['Skype', 'Chat', 'Rambox', 'Microsoft Teams - Preview'],
             ),
         Props(icon="蓼", name="media",
             key="ccedilla",
@@ -361,7 +361,7 @@ keys.extend([
 layouts = [
         layout.Max(),
         layout.Bsp(),
-        layout.Columns(),
+        layout.Columns(fair=True),
 ]
 
 widget_defaults = dict(
@@ -437,6 +437,7 @@ cursor_warp = False
 floating_layout = layout.Floating(border_width=0, float_rules=[
     # Run the utility of `xprop` to see the wm class and name of an X client.
     Match(wm_type='utility'),
+    Match(wm_class='Pinentry-gtk-2'),
     Match(wm_type='notification'),
     Match(wm_type='toolbar'),
     Match(wm_type='splash'),
