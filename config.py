@@ -69,7 +69,6 @@ def moveToGroup(qtile, direction, skip_empty=False, move_window=False):
         if move_window:
             old_window.togroup(qtile.current_group.name)
 
-'''
 @lazy.function
 def raiseFloatingWindows(qtile):
     """ Raises floating windows to the top """
@@ -77,7 +76,6 @@ def raiseFloatingWindows(qtile):
         for window in group.windows:
             if window.floating:
                 window.cmd_bring_to_front()
-'''
 
 @lazy.function
 def goToUrgent(qtile):
@@ -96,7 +94,7 @@ def goToUrgent(qtile):
 
 keys = [ # {{{
     # Custom commands
-#    Key([mod], "r", raiseFloatingWindows, desc="raise floating"),
+    Key([mod, "shift"], "r", raiseFloatingWindows, desc="raise floating"),
     Key([mod], "o", moveToNextScreen, desc="move to next screen"),
     Key([mod], "p", lazy.next_screen(), desc="go to next screen"),
     Key([mod], "e", lazy.spawn('rofi -p "Go to" -show combi -modi combi -combi-modi window'), desc="window list"),
