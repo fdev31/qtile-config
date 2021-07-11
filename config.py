@@ -25,6 +25,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 # }}}
+import os
 import subprocess
 
 import re # {{{
@@ -97,7 +98,7 @@ keys = [ # {{{
     Key([mod, "shift"], "r", raiseFloatingWindows, desc="raise floating"),
     Key([mod], "o", moveToNextScreen, desc="move to next screen"),
     Key([mod], "p", lazy.next_screen(), desc="go to next screen"),
-    Key([mod], "e", lazy.spawn('rofi -p "Go to" -show combi -modi combi -combi-modi window'), desc="window list"),
+    Key([mod], "e", lazy.spawn(os.path.expanduser('~/.config/rofi/bin/launcher_colorful')), desc="Launcher/Switcher"),
     Key([mod], "r", lazy.spawn('mymenu.sh'), desc="shortcuts menu"),
     Key([mod], "z", lazy.spawn('synapse'), desc="launcher"),
     Key([mod], "d", lazy.spawn('doNotDisturb'), desc="toggle notifications"),
