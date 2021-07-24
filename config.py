@@ -113,7 +113,7 @@ keys = [ # {{{
     Key([mod], "w", lazy.spawn(APP_WEB)),
 
     Key([mod], "b", lazy.hide_show_bar()),
-    Key([mod], 'Escape', lazy.screen.togglegroup()),
+    Key([mod], 'Escape', lazy.screen.toggle_group()),
 
     # Switch between windows in current stack pane
     Key([mod], "Down", lazy.layout.down()),
