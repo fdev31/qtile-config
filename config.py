@@ -48,10 +48,9 @@ mod = "mod4"
 @lazy.function
 def moveToNextScreen(qtile):
     """Move active win to next screen"""
-    subprocess.Popen('xdotool mousemove 0 1080'.split()) # XXX: https://github.com/qtile/qtile/issues/1778
     active_win = qtile.current_window
     qtile.focus_screen( (qtile.screens.index(qtile.current_screen) + 1) % len(qtile.screens) )
-    active_win and active_win.toscreen()
+    active_win and active_win.togroup(qtile.current_screen.group.name)
 
 def moveToGroup(qtile, direction, skip_empty=False, move_window=False):
     """ Move to sibling groups """
