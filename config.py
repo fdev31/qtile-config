@@ -40,6 +40,7 @@ APP_FILES='nautilus'
 APP_WEB='firefox'
 APP_TERM='kitty'
 USE_CUSTOM_KEYS=True # set to False to run ./gen-keybinding-img, current keys are for French azerty
+WORKMODE=False
 
 mod = "mod4"
 
@@ -213,6 +214,7 @@ group_def = [
             ),
         Props(icon="瑩", name="chat",
             #spawn=[APP_TERM + " --class Chat ssh cra"], # FIXME: spawns multiple times
+            spawn=["signal-desktop"],
             layout="max",
             key="underscore",
             wm_classes=['Skype', 'Chat', 'Rambox', 'Microsoft Teams - Preview', 'Ferdi'],
@@ -349,9 +351,17 @@ def toggleDropDown(qtile, groupname, dropdowns):
 keys.extend([
     Key([mod], "a", lazy.function(toggleDropDown, "scratchpad", ["term", "qlog"])),
     Key([mod], "v", lazy.function(toggleDropDown, "volume", ["pavucontrol"])),
-    Key([mod], "m", lazy.function(toggleDropDown, "CPE", ["vrcu", "journal", "term"])),
     ])
 
+
+if WORKMODE:
+    keys.extend([
+        Key([mod], "m", lazy.function(toggleDropDown, "CPE", ["vrcu", "journal", "term"])),
+        ])
+else:
+    keys.extend([
+        Key([mod], "m", lazy.spawn("toggleCapture")),
+        ])
 # }}}
 
 # Screens : layouts & widgets {{{
@@ -453,6 +463,7 @@ floating_layout = layout.Floating(border_width=0, float_rules=[
     Match(wm_class='maketag'),  # gitk
     Match(wm_class='ssh-askpass'),  # ssh-askpass
     Match(wm_class='ulauncher'),  # ssh-askpass
+    Match(wm_class='gyroflow.py'),
     Match(title='branchdialog'),  # gitk
     Match(title='pinentry'),  # GPG key password entry
     Match(title='safeeyes'),  # GPG key password entry
