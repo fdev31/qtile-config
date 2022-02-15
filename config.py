@@ -351,16 +351,13 @@ def toggleDropDown(qtile, groupname, dropdowns):
 keys.extend([
     Key([mod], "a", lazy.function(toggleDropDown, "scratchpad", ["term", "qlog"])),
     Key([mod], "v", lazy.function(toggleDropDown, "volume", ["pavucontrol"])),
+    Key([mod], "x", lazy.spawn("toggleCapture")),
     ])
 
 
 if WORKMODE:
     keys.extend([
         Key([mod], "m", lazy.function(toggleDropDown, "CPE", ["vrcu", "journal", "term"])),
-        ])
-else:
-    keys.extend([
-        Key([mod], "m", lazy.spawn("toggleCapture")),
         ])
 # }}}
 
