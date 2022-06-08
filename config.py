@@ -463,6 +463,8 @@ floating_layout = layout.Floating(border_width=0, float_rules=[
     Match(wm_class='ssh-askpass'),  # ssh-askpass
     Match(wm_class='ulauncher'),  # ssh-askpass
     Match(wm_class='gyroflow.py'),
+    Match(title='Steam'),
+    Match(wm_class='Steam'),
     Match(title='branchdialog'),  # gitk
     Match(title='pinentry'),  # GPG key password entry
     Match(title='safeeyes'),  # GPG key password entry
