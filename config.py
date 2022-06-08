@@ -387,6 +387,8 @@ screens = [
                 widget.CurrentLayout(),
                 widget.Systray(),
                 widget.Sep(),
+                widget.Backlight(backlight_name='amdgpu_bl0', format='💡  {percent:2.0%}', change_command="brightnessctl s {0}%", step=2),
+                widget.Sep(),
                 widget.TextBox(text="龍 ", padding=1),
                 widget.CPUGraph(width=graph_width, samples=graph_width*2, padding=0),
                 widget.TextBox(text=" ", padding=1),
