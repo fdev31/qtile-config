@@ -519,7 +519,6 @@ screens = [
                 widget.GroupBox(),
                 widget.Prompt(),
                 widget.WindowName(),
-                #                 widget.PulseVolume(),
                 widget.Sep(),
                 widget.Clock(format="%a %d/%m %H:%M"),
             ],
