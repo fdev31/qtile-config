@@ -475,6 +475,8 @@ floating_layout = layout.Floating(border_width=0, float_rules=[
     Match(title='pinentry'),  # GPG key password entry
     Match(title='safeeyes'),  # GPG key password entry
     Match(title=re.compile('Android Emulator.*')),
+    Match(wm_class='wineboot.exe', title=re.compile('.*Wine')),
+    Match(wm_class='control.exe', title=re.compile('.*Wine')),
 ])
 auto_fullscreen = True
 
