@@ -378,39 +378,38 @@ extension_defaults = widget_defaults.copy()
 
 graph_width = 22
 
+BL_DEVICE_NAME='amdgpu_bl1'
+backlight_control = [
+    widget.Backlight(backlight_name=BL_DEVICE_NAME, format='💡  {percent:2.0%}', change_command="brightnessctl s {0}%", step=2),
+    widget.Sep(),
+] if os.path.exits('/sys/devices/pci0000:00/0000:00:08.1/0000:05:00.0/backlight/'+BL_DEVICE_NAME) else []
+
+bottom_bar = [
+        widget.GroupBox(invert_mouse_wheel=True),
+        widget.Prompt(),
+        widget.TaskList(),
+        widget.CurrentLayout(),
+        widget.Systray(),
+        widget.Sep(),
+    ] + backlight_control + [
+        widget.TextBox(text="龍 ", padding=1),
+        widget.CPUGraph(width=graph_width, samples=graph_width*2, padding=0),
+        widget.TextBox(text=" ", padding=1),
+        widget.MemoryGraph(width=graph_width, samples=graph_width*2, padding=0),
+        widget.TextBox(text=" ", padding=1),
+        widget.NetGraph(width=graph_width, samples=graph_width*6, padding=0),
+        widget.Sep(),
+        widget.TextBox(text="/", padding=1),
+        widget.HDDGraph(path='/', space_type="free", width=graph_width),
+        widget.TextBox(text="/home", padding=1),
+        widget.HDDGraph(path='/home', space_type="free", width=graph_width),
+        widget.Sep(),
+        widget.Clock(format='%a %d/%m %H:%M'),
+]
+
 screens = [
     Screen(
-        bottom=bar.Bar(
-            [
-                widget.GroupBox(invert_mouse_wheel=True),
-                widget.Prompt(),
-                widget.TaskList(),
-                widget.CurrentLayout(),
-                widget.Systray(),
-                widget.Sep(),
-                widget.Backlight(backlight_name='amdgpu_bl0', format='💡  {percent:2.0%}', change_command="brightnessctl s {0}%", step=2),
-                widget.Sep(),
-                widget.TextBox(text="龍 ", padding=1),
-                widget.CPUGraph(width=graph_width, samples=graph_width*2, padding=0),
-                widget.TextBox(text=" ", padding=1),
-                widget.MemoryGraph(width=graph_width, samples=graph_width*2, padding=0),
-                widget.TextBox(text=" ", padding=1),
-                widget.NetGraph(width=graph_width, samples=graph_width*6, padding=0),
-                widget.Sep(),
-                widget.TextBox(text="/", padding=1),
-                widget.HDDGraph(path='/', space_type="free", width=graph_width),
-                widget.TextBox(text="/home", padding=1),
-                widget.HDDGraph(path='/home', space_type="free", width=graph_width),
-                widget.Sep(),
-                widget.Clock(format='%a %d/%m %H:%M'),
-#                widget.YahooWeather(
-#                    coordinates=dict(latitude=52.2668, longitude=4.74894),
-#                    format='☔{current_observation_atmosphere_humidity} ⚟{current_observation_wind_speed} {forecasts_0_text} {current_observation_condition_symbol} {forecasts_0_low}/{forecasts_0_high}° ⇒ {forecasts_1_low}/{forecasts_1_high}°{units_temperature}',
-#                    ),
-#                widget.PulseVolume(),
-            ],
-            24,
-        ),
+        bottom=bar.Bar(bottom_bar, 24),
     ),
     Screen(
         bottom=bar.Bar(
