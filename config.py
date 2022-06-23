@@ -36,8 +36,9 @@ from libqtile.lazy import lazy
 from libqtile import layout, bar, widget, hook
 from libqtile import extension # }}}
 
-APP_FILES='nautilus'
-APP_WEB='firefox'
+
+APP_FILES='caja'
+APP_WEB='brave'
 APP_TERM='kitty'
 USE_CUSTOM_KEYS=True # set to False to run ./gen-keybinding-img, current keys are for French azerty
 WORKMODE=False
@@ -217,7 +218,7 @@ group_def = [
             spawn=["signal-desktop"],
             layout="max",
             key="underscore",
-            wm_classes=['Skype', 'Chat', 'Rambox', 'Microsoft Teams - Preview', 'Ferdi'],
+            wm_classes=['Skype', 'Chat', 'Rambox', 'Microsoft Teams - Preview', 'Ferdium'],
             ),
         Props(icon="蓼", name="media",
             key="ccedilla",
