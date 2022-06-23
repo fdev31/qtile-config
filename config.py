@@ -1,4 +1,4 @@
-#{{{
+# {{{
 # Copyright (c) 2010 Aldo Cortesi
 # Copyright (c) 2010, 2014 dequis
 # Copyright (c) 2012 Randall Ma
@@ -28,39 +28,49 @@
 import os
 import subprocess
 
-import re # {{{
+import re  # {{{
 from typing import List  # noqa: F401
 from libqtile.config import Key, Screen, Group, Drag, Click
 from libqtile.config import ScratchPad, DropDown, Match
 from libqtile.lazy import lazy
 from libqtile import layout, bar, widget, hook
-from libqtile import extension # }}}
+from libqtile import extension  # }}}
 
 
-APP_FILES='caja'
-APP_WEB='brave'
-APP_TERM='kitty'
-USE_CUSTOM_KEYS=True # set to False to run ./gen-keybinding-img, current keys are for French azerty
-WORKMODE=False
+APP_FILES = "caja"
+APP_WEB = "brave"
+APP_TERM = "kitty"
+USE_CUSTOM_KEYS = (
+    True  # set to False to run ./gen-keybinding-img, current keys are for French azerty
+)
+WORKMODE = False
 
 mod = "mod4"
 
 # Action functions {{{
 
+
 @lazy.function
 def moveToNextScreen(qtile):
     """Move active win to next screen"""
     active_win = qtile.current_window
-    qtile.focus_screen( (qtile.screens.index(qtile.current_screen) + 1) % len(qtile.screens) )
+    qtile.focus_screen(
+        (qtile.screens.index(qtile.current_screen) + 1) % len(qtile.screens)
+    )
     active_win and active_win.togroup(qtile.current_screen.group.name)
 
+
 def moveToGroup(qtile, direction, skip_empty=False, move_window=False):
-    """ Move to sibling groups """
+    """Move to sibling groups"""
     old_window = qtile.current_window
     cur_group = qtile.current_group
 
-    for _ in groups: # just to limit it
-        cur_group = cur_group.get_next_group() if direction > 0 else cur_group.get_previous_group()
+    for _ in groups:  # just to limit it
+        cur_group = (
+            cur_group.get_next_group()
+            if direction > 0
+            else cur_group.get_previous_group()
+        )
         if skip_empty and not len(cur_group.windows):
             continue
         if cur_group.screen and cur_group.screen != qtile.current_screen:
@@ -71,94 +81,125 @@ def moveToGroup(qtile, direction, skip_empty=False, move_window=False):
         if move_window:
             old_window.togroup(qtile.current_group.name)
 
+
 @lazy.function
 def raiseFloatingWindows(qtile):
-    """ Raises floating windows to the top """
+    """Raises floating windows to the top"""
     for group in qtile.groups:
         for window in group.windows:
             if window.floating:
                 window.cmd_bring_to_front()
 
+
 @lazy.function
 def goToUrgent(qtile):
-    """ Switch to the next urgent group """
+    """Switch to the next urgent group"""
     for group in qtile.groups_map.values():
         if group == qtile.current_group:
             continue
         if [1 for w in group.windows if w.urgent]:
             qtile.current_screen.set_group(group)
             break
+
+
 # }}}
 
 # NOTE: nice run menus:
-#/usr/bin/rofi -modi run,drun -show drun run
+# /usr/bin/rofi -modi run,drun -show drun run
 # rofi -show combi -modi combi -combi-modi window,run,ssh
 
-keys = [ # {{{
+keys = [  # {{{
     # Custom commands
     Key([mod, "shift"], "r", raiseFloatingWindows, desc="raise floating"),
     Key([mod], "o", moveToNextScreen, desc="move to next screen"),
     Key([mod], "p", lazy.next_screen(), desc="go to next screen"),
-    Key([mod], "r", lazy.spawn('mymenu.sh'), desc="shortcuts menu"),
-    Key([mod], "z", lazy.spawn(os.path.expanduser('rofi -show combi -combi-modi window,drun -modi combi -theme ~/.config/rofi/launchers/colorful/custom'))),
-    Key([mod], "d", lazy.spawn('doNotDisturb'), desc="toggle notifications"),
-    Key([mod], "l", lazy.spawn('mate-screensaver-command -l'), desc="lock screen"),
-    Key([mod, "control"], "l", lazy.spawn('mate-session-save --shutdown-dialog'), desc="Shutdown popup"),
-    Key([mod], "u", goToUrgent, desc='Switch to urgent'),
+    Key([mod], "r", lazy.spawn("mymenu.sh"), desc="shortcuts menu"),
+    Key(
+        [mod],
+        "z",
+        lazy.spawn(
+            os.path.expanduser(
+                "rofi -show combi -combi-modi window,drun -modi combi -theme ~/.config/rofi/launchers/colorful/custom"
+            )
+        ),
+    ),
+    Key([mod], "d", lazy.spawn("doNotDisturb"), desc="toggle notifications"),
+    Key([mod], "l", lazy.spawn("mate-screensaver-command -l"), desc="lock screen"),
+    Key(
+        [mod, "control"],
+        "l",
+        lazy.spawn("mate-session-save --shutdown-dialog"),
+        desc="Shutdown popup",
+    ),
+    Key([mod], "u", goToUrgent, desc="Switch to urgent"),
     Key([mod], "s", lazy.window.toggle_floating()),
     Key([mod], "f", lazy.window.toggle_fullscreen()),
     Key([mod], "n", lazy.window.toggle_minimize()),
-
     Key([mod], "t", lazy.spawn(APP_FILES)),
     Key([mod], "w", lazy.spawn(APP_WEB)),
-
     Key([mod], "b", lazy.hide_show_bar()),
-    Key([mod], 'Escape', lazy.screen.toggle_group()),
-
+    Key([mod], "Escape", lazy.screen.toggle_group()),
     # Switch between windows in current stack pane
     Key([mod], "Down", lazy.layout.down()),
     Key([mod], "Up", lazy.layout.up()),
     Key([mod], "Left", lazy.layout.left()),
     Key([mod], "Right", lazy.layout.right()),
-
     # Move to group:
     Key([mod], "j", lazy.function(moveToGroup, -1), desc="prev group"),
-    Key([mod], "k", lazy.function(moveToGroup,1), desc="next group"),
-
-    Key([mod, "shift"], "j", lazy.function(moveToGroup, -1, True), desc="prev used group"),
-    Key([mod, "shift"], "k", lazy.function(moveToGroup,1, True), desc="next used group"),
-
+    Key([mod], "k", lazy.function(moveToGroup, 1), desc="next group"),
+    Key(
+        [mod, "shift"],
+        "j",
+        lazy.function(moveToGroup, -1, True),
+        desc="prev used group",
+    ),
+    Key(
+        [mod, "shift"], "k", lazy.function(moveToGroup, 1, True), desc="next used group"
+    ),
     # move to group + carry window:
-    Key([mod, "mod1"], "j", lazy.function(moveToGroup, -1, False, True), desc="move to prev group"),
-    Key([mod, "mod1"], "k", lazy.function(moveToGroup,1, False, True), desc="move to next group"),
-    Key([mod, "mod1", "shift"], "j", lazy.function(moveToGroup, -1, True, True), desc="move to prev used group"),
-    Key([mod, "mod1", "shift"], "k", lazy.function(moveToGroup,1, True, True), desc="move to next used group"),
-
+    Key(
+        [mod, "mod1"],
+        "j",
+        lazy.function(moveToGroup, -1, False, True),
+        desc="move to prev group",
+    ),
+    Key(
+        [mod, "mod1"],
+        "k",
+        lazy.function(moveToGroup, 1, False, True),
+        desc="move to next group",
+    ),
+    Key(
+        [mod, "mod1", "shift"],
+        "j",
+        lazy.function(moveToGroup, -1, True, True),
+        desc="move to prev used group",
+    ),
+    Key(
+        [mod, "mod1", "shift"],
+        "k",
+        lazy.function(moveToGroup, 1, True, True),
+        desc="move to next used group",
+    ),
     # Move windows up or down in current stack
     Key([mod, "mod1"], "Up", lazy.layout.shuffle_up()),
     Key([mod, "mod1"], "Down", lazy.layout.shuffle_down()),
     Key([mod, "mod1"], "Left", lazy.layout.shuffle_left()),
     Key([mod, "mod1"], "Right", lazy.layout.shuffle_right()),
-
     Key([mod, "shift"], "Up", lazy.layout.grow_up()),
     Key([mod, "shift"], "Down", lazy.layout.grow_down()),
     Key([mod, "shift"], "Left", lazy.layout.grow_left()),
     Key([mod, "shift"], "Right", lazy.layout.grow_right()),
-
     Key([mod, "control"], "Up", lazy.layout.flip_up()),
     Key([mod, "control"], "Down", lazy.layout.flip_down()),
     Key([mod, "control"], "Left", lazy.layout.flip_left()),
     Key([mod, "control"], "Right", lazy.layout.flip_right()),
-
     Key(["control", mod, "shift"], "Up", lazy.window.up_opacity()),
     Key(["control", mod, "shift"], "Down", lazy.window.down_opacity()),
-
     # Switch window focus to other pane(s) of stack
     Key([mod], "Tab", lazy.layout.next()),
-
     # Swap panes of split stack
     Key([mod, "shift"], "Tab", lazy.layout.rotate()),
-
     # Toggle between split and unsplit sides of stack.
     # Split = all windows displayed
     # Unsplit = 1 window displayed, like Max layout, but still with
@@ -166,16 +207,15 @@ keys = [ # {{{
     Key([mod], "BackSpace", lazy.layout.toggle_split()),
     Key([mod, "shift"], "BackSpace", lazy.layout.normalize()),
     Key([mod], "Return", lazy.spawn(APP_TERM)),
-
     # Toggle between different layouts as defined below
     Key([mod], "space", lazy.next_layout()),
     Key([mod], "c", lazy.window.kill()),
-
     Key([mod, "control"], "r", lazy.restart()),
-#     Key([mod, "control"], "q", lazy.shutdown()),
-] # }}}
+    #     Key([mod, "control"], "q", lazy.shutdown()),
+]  # }}}
 
 # Groups definition {{{
+
 
 class Props(dict):
     def __getattr__(self, attr):
@@ -183,88 +223,121 @@ class Props(dict):
             return self[attr]
         except KeyError:
             return
+
+
 groups = []
 groups_by_id = Props()
 
-#ICONS: 什擄來洛 烙落 酪 駱藍燎亮咽 溜 琉 阮蓼切盧
+# ICONS: 什擄來洛 烙落 酪 駱藍燎亮咽 溜 琉 阮蓼切盧
 
 group_def = [
-        Props(icon="", name="term",
-            key="ampersand",
-            ),
-        Props(icon="", name="web",
-            key="eacute",
-            ),
-        Props(icon="", name="todo",
-            key="quotedbl",
-            ),
-        Props(icon="燎", name="nodes",
-            key="apostrophe",
-            ),
-        Props(icon="", name="mail",
-            key="parenleft",
-            wm_classes=['Evolution'],
-            ),
-        Props(icon="", name="gfx",
-            key="minus",
-            wm_classes=['Blender', re.compile('Gimp-.*'), 'Inkscape'],
-            ),
-        Props(icon="更", name="rec",
-            key="egrave",
-            wm_classes=['Zim'],
-            ),
-        Props(icon="瑩", name="chat",
-            #spawn=[APP_TERM + " --class Chat ssh cra"], # FIXME: spawns multiple times
-            spawn=["signal-desktop"],
-            layout="max",
-            key="underscore",
-            wm_classes=['Skype', 'Chat', 'Rambox', 'Microsoft Teams - Preview', 'Ferdium'],
-            ),
-        Props(icon="蓼", name="media",
-            key="ccedilla",
-            wm_classes=['Popcorn-Time', 'pulseUI'],
-            ),
-        Props(icon="亮", name="logs",
-            layout="columns",
-            key="agrave",
-            wm_classes=['TermLog'],
-            ),
-        ]
+    Props(
+        icon="",
+        name="term",
+        key="ampersand",
+    ),
+    Props(
+        icon="",
+        name="web",
+        key="eacute",
+    ),
+    Props(
+        icon="",
+        name="todo",
+        key="quotedbl",
+    ),
+    Props(
+        icon="燎",
+        name="nodes",
+        key="apostrophe",
+    ),
+    Props(
+        icon="",
+        name="mail",
+        key="parenleft",
+        wm_classes=["Evolution"],
+    ),
+    Props(
+        icon="",
+        name="gfx",
+        key="minus",
+        wm_classes=["Blender", re.compile("Gimp-.*"), "Inkscape"],
+    ),
+    Props(
+        icon="更",
+        name="rec",
+        key="egrave",
+        wm_classes=["Zim"],
+    ),
+    Props(
+        icon="瑩",
+        name="chat",
+        # spawn=[APP_TERM + " --class Chat ssh cra"], # FIXME: spawns multiple times
+        spawn=["signal-desktop"],
+        layout="max",
+        key="underscore",
+        wm_classes=["Skype", "Chat", "Rambox", "Microsoft Teams - Preview", "Ferdium"],
+    ),
+    Props(
+        icon="蓼",
+        name="media",
+        key="ccedilla",
+        wm_classes=["Popcorn-Time", "pulseUI"],
+    ),
+    Props(
+        icon="亮",
+        name="logs",
+        layout="columns",
+        key="agrave",
+        wm_classes=["TermLog"],
+    ),
+]
 # }}}
 
 # Groups creation {{{
 for i, group in enumerate(group_def):
     key = group.key if USE_CUSTOM_KEYS else str(i)[-1]
     g = Group(
-            name=group.name,
-            label="%s%s"%((str(i+1))[-1], group.icon) if group.key else group.icon,
-            layout=group.layout or "bsp",
-            spawn=group.spawn,
-            matches=[Match(wm_class=c) for c in group.wm_classes] if group.wm_classes else None,
-            )
-    groups_by_id[group.name] = g;
+        name=group.name,
+        label="%s%s" % ((str(i + 1))[-1], group.icon) if group.key else group.icon,
+        layout=group.layout or "bsp",
+        spawn=group.spawn,
+        matches=[Match(wm_class=c) for c in group.wm_classes]
+        if group.wm_classes
+        else None,
+    )
+    groups_by_id[group.name] = g
     groups.append(g)
 
     if key:
-        keys.extend([
-            # mod1 + letter of group = switch to group
-            Key([mod], key, lazy.group[g.name].toscreen(), desc='switching to group '+g.name),
-
-            # mod1 + shift + letter of group = switch to & move focused window to group
-            Key([mod, "shift"], key, lazy.window.togroup(g.name, switch_group=True)),
-        ])
+        keys.extend(
+            [
+                # mod1 + letter of group = switch to group
+                Key(
+                    [mod],
+                    key,
+                    lazy.group[g.name].toscreen(),
+                    desc="switching to group " + g.name,
+                ),
+                # mod1 + shift + letter of group = switch to & move focused window to group
+                Key(
+                    [mod, "shift"], key, lazy.window.togroup(g.name, switch_group=True)
+                ),
+            ]
+        )
 
 # Scratchpad
 groups.append(
     ScratchPad(
-        "scratchpad", [
+        "scratchpad",
+        [
             DropDown(
                 "term",
                 APP_TERM,
                 opacity=0.88,
                 height=0.55,
                 on_focus_lost_hide=False,
-                width=0.80
+                width=0.80,
             ),
             DropDown(
                 "qlog",
@@ -273,29 +346,31 @@ groups.append(
                 y=0.56,
                 height=0.40,
                 on_focus_lost_hide=False,
-                width=0.80
-            )
-        ]
+                width=0.80,
+            ),
+        ],
     )
 )
 
 groups.append(
     ScratchPad(
-        "volume", [
+        "volume",
+        [
             DropDown(
                 "pavucontrol",
                 "/usr/bin/pavucontrol",
                 opacity=0.88,
                 height=0.95,
-                width=0.60
+                width=0.60,
             ),
-        ]
+        ],
     )
 )
 
 groups.append(
     ScratchPad(
-        "CPE", [
+        "CPE",
+        [
             DropDown(
                 "journal",
                 APP_TERM + " sstb journalctl -o cat -fxn -u jsapp",
@@ -323,9 +398,10 @@ groups.append(
                 width=0.1,
                 on_focus_lost_hide=False,
             ),
-        ]
+        ],
     )
 )
+
 
 def toggleDropDown(qtile, groupname, dropdowns):
     dd = qtile.groups_map[groupname].dropdowns
@@ -347,30 +423,40 @@ def toggleDropDown(qtile, groupname, dropdowns):
                 dd[name].show()
             except KeyError:
                 qtile.groups_map[groupname].cmd_dropdown_toggle(name)
-    if first: dd[first].window.focus(warp=True)
+    if first:
+        dd[first].window.focus(warp=True)
 
-keys.extend([
-    Key([mod], "a", lazy.function(toggleDropDown, "scratchpad", ["term", "qlog"])),
-    Key([mod], "v", lazy.function(toggleDropDown, "volume", ["pavucontrol"])),
-    Key([mod], "x", lazy.spawn("toggleCapture")),
-    ])
+
+keys.extend(
+    [
+        Key([mod], "a", lazy.function(toggleDropDown, "scratchpad", ["term", "qlog"])),
+        Key([mod], "v", lazy.function(toggleDropDown, "volume", ["pavucontrol"])),
+        Key([mod], "x", lazy.spawn("toggleCapture")),
+    ]
+)
 
 
 if WORKMODE:
-    keys.extend([
-        Key([mod], "m", lazy.function(toggleDropDown, "CPE", ["vrcu", "journal", "term"])),
-        ])
+    keys.extend(
+        [
+            Key(
+                [mod],
+                "m",
+                lazy.function(toggleDropDown, "CPE", ["vrcu", "journal", "term"]),
+            ),
+        ]
+    )
 # }}}
 
 # Screens : layouts & widgets {{{
 layouts = [
-        layout.Max(),
-        layout.Bsp(),
-        layout.Columns(fair=True),
+    layout.Max(),
+    layout.Bsp(),
+    layout.Columns(fair=True),
 ]
 
 widget_defaults = dict(
-    font='sans',
+    font="sans",
     fontsize=12,
     padding=3,
 )
@@ -378,34 +464,49 @@ extension_defaults = widget_defaults.copy()
 
 graph_width = 22
 
-BL_DEVICE_NAME='amdgpu_bl1'
-backlight_control = [
-    widget.Backlight(backlight_name=BL_DEVICE_NAME, format='💡  {percent:2.0%}', change_command="brightnessctl s {0}%", step=2),
-    widget.Sep(),
-] if os.path.exits('/sys/devices/pci0000:00/0000:00:08.1/0000:05:00.0/backlight/'+BL_DEVICE_NAME) else []
+BL_DEVICE_NAME = "amdgpu_bl1"
+backlight_control = (
+    [
+        widget.Backlight(
+            backlight_name=BL_DEVICE_NAME,
+            format="💡  {percent:2.0%}",
+            change_command="brightnessctl s {0}%",
+            step=2,
+        ),
+        widget.Sep(),
+    ]
+    if os.path.exits(
+        "/sys/devices/pci0000:00/0000:00:08.1/0000:05:00.0/backlight/" + BL_DEVICE_NAME
+    )
+    else []
+)
 
-bottom_bar = [
+bottom_bar = (
+    [
         widget.GroupBox(invert_mouse_wheel=True),
         widget.Prompt(),
         widget.TaskList(),
         widget.CurrentLayout(),
         widget.Systray(),
         widget.Sep(),
-    ] + backlight_control + [
+    ]
+    + backlight_control
+    + [
         widget.TextBox(text="龍 ", padding=1),
-        widget.CPUGraph(width=graph_width, samples=graph_width*2, padding=0),
+        widget.CPUGraph(width=graph_width, samples=graph_width * 2, padding=0),
         widget.TextBox(text=" ", padding=1),
-        widget.MemoryGraph(width=graph_width, samples=graph_width*2, padding=0),
+        widget.MemoryGraph(width=graph_width, samples=graph_width * 2, padding=0),
         widget.TextBox(text=" ", padding=1),
-        widget.NetGraph(width=graph_width, samples=graph_width*6, padding=0),
+        widget.NetGraph(width=graph_width, samples=graph_width * 6, padding=0),
         widget.Sep(),
         widget.TextBox(text="/", padding=1),
-        widget.HDDGraph(path='/', space_type="free", width=graph_width),
+        widget.HDDGraph(path="/", space_type="free", width=graph_width),
         widget.TextBox(text="/home", padding=1),
-        widget.HDDGraph(path='/home', space_type="free", width=graph_width),
+        widget.HDDGraph(path="/home", space_type="free", width=graph_width),
         widget.Sep(),
-        widget.Clock(format='%a %d/%m %H:%M'),
-]
+        widget.Clock(format="%a %d/%m %H:%M"),
+    ]
+)
 
 screens = [
     Screen(
@@ -418,23 +519,28 @@ screens = [
                 widget.GroupBox(),
                 widget.Prompt(),
                 widget.WindowName(),
-#                 widget.PulseVolume(),
+                #                 widget.PulseVolume(),
                 widget.Sep(),
-                widget.Clock(format='%a %d/%m %H:%M'),
+                widget.Clock(format="%a %d/%m %H:%M"),
             ],
             24,
         ),
     ),
-] # }}}
+]  # }}}
 
 # Drag floating layouts. {{{
 mouse = [
-    Drag([mod], "Button1", lazy.window.set_position_floating(),
-         start=lazy.window.get_position()),
-    Drag([mod], "Button3", lazy.window.set_size_floating(),
-         start=lazy.window.get_size()),
-    Click([mod], "Button2", lazy.window.bring_to_front())
-] # }}}
+    Drag(
+        [mod],
+        "Button1",
+        lazy.window.set_position_floating(),
+        start=lazy.window.get_position(),
+    ),
+    Drag(
+        [mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()
+    ),
+    Click([mod], "Button2", lazy.window.bring_to_front()),
+]  # }}}
 
 # Misc / floating {{{
 dgroups_key_binder = None
@@ -445,44 +551,47 @@ bring_front_click = False
 cursor_warp = False
 
 
-floating_layout = layout.Floating(border_width=0, float_rules=[
-    # Run the utility of `xprop` to see the wm class and name of an X client.
-    Match(wm_type='utility'),
-    Match(wm_class='Pinentry-gtk-2'),
-    Match(wm_type='notification'),
-    Match(wm_type='toolbar'),
-    Match(wm_type='splash'),
-    Match(wm_type='dialog'),
-    Match(wm_class='file_progress'),
-    Match(wm_class='confirm'),
-    Match(wm_class='dialog'),
-    Match(wm_class='download'),
-    Match(wm_class='error'),
-    Match(wm_class='notification'),
-    Match(wm_class='splash'),
-    Match(wm_class='toolbar'),
-    Match(wm_class='evolution-alarm-notify'),
-    Match(wm_class='confirmreset'),  # gitk
-    Match(wm_class='makebranch'),  # gitk
-    Match(wm_class='maketag'),  # gitk
-    Match(wm_class='ssh-askpass'),  # ssh-askpass
-    Match(wm_class='ulauncher'),  # ssh-askpass
-    Match(wm_class='gyroflow.py'),
-    Match(title='Steam'),
-    Match(wm_class='Steam'),
-    Match(title='branchdialog'),  # gitk
-    Match(title='pinentry'),  # GPG key password entry
-    Match(title='safeeyes'),  # GPG key password entry
-    Match(title=re.compile('Android Emulator.*')),
-    Match(wm_class='wineboot.exe', title=re.compile('.*Wine')),
-    Match(wm_class='control.exe', title=re.compile('.*Wine')),
-])
+floating_layout = layout.Floating(
+    border_width=0,
+    float_rules=[
+        # Run the utility of `xprop` to see the wm class and name of an X client.
+        Match(wm_type="utility"),
+        Match(wm_class="Pinentry-gtk-2"),
+        Match(wm_type="notification"),
+        Match(wm_type="toolbar"),
+        Match(wm_type="splash"),
+        Match(wm_type="dialog"),
+        Match(wm_class="file_progress"),
+        Match(wm_class="confirm"),
+        Match(wm_class="dialog"),
+        Match(wm_class="download"),
+        Match(wm_class="error"),
+        Match(wm_class="notification"),
+        Match(wm_class="splash"),
+        Match(wm_class="toolbar"),
+        Match(wm_class="evolution-alarm-notify"),
+        Match(wm_class="confirmreset"),  # gitk
+        Match(wm_class="makebranch"),  # gitk
+        Match(wm_class="maketag"),  # gitk
+        Match(wm_class="ssh-askpass"),  # ssh-askpass
+        Match(wm_class="ulauncher"),  # ssh-askpass
+        Match(wm_class="gyroflow.py"),
+        Match(title="Steam"),
+        Match(wm_class="Steam"),
+        Match(title="branchdialog"),  # gitk
+        Match(title="pinentry"),  # GPG key password entry
+        Match(title="safeeyes"),  # GPG key password entry
+        Match(title=re.compile("Android Emulator.*")),
+        Match(wm_class="wineboot.exe", title=re.compile(".*Wine")),
+        Match(wm_class="control.exe", title=re.compile(".*Wine")),
+    ],
+)
 auto_fullscreen = True
 
 auto_fullscreen_exceptions = (
-         Match(wm_class='firefox'),
-         Match(wm_class='google-chrome'),
-        )
+    Match(wm_class="firefox"),
+    Match(wm_class="google-chrome"),
+)
 
 # focus_on_window_activation = "urgent"
 focus_on_window_activation = "smart"
@@ -492,7 +601,7 @@ wmname = "LG3D"
 # }}}
 
 # Auto move windows to groups {{{
-'''
+"""
 dynamic_names = {
         re.compile('Slack | .* | Horizon 4.0'): Props(group=groups_by_id.chat.name),
         re.compile('.*OMW - General .* - Flowdock'): Props(group=groups_by_id.chat.name),
@@ -525,4 +634,4 @@ def conditional_fullscreen(client, state):
                     state.append('fullscreen')
             break
 
-'''
+"""
