@@ -397,6 +397,11 @@ screens = [
                 widget.TextBox(text=" ", padding=1),
                 widget.NetGraph(width=graph_width, samples=graph_width*6, padding=0),
                 widget.Sep(),
+                widget.TextBox(text="/", padding=1),
+                widget.HDDGraph(path='/', space_type="free", width=graph_width),
+                widget.TextBox(text="/home", padding=1),
+                widget.HDDGraph(path='/home', space_type="free", width=graph_width),
+                widget.Sep(),
                 widget.Clock(format='%a %d/%m %H:%M'),
 #                widget.YahooWeather(
 #                    coordinates=dict(latitude=52.2668, longitude=4.74894),
