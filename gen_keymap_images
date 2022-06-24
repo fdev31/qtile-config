@@ -1,4 +1,6 @@
 #!/bin/sh
+export NO_CUSTOM_KEYS=1
+
 repo=$(pwd)
 cd ~/dev/contribs/qtile/
 

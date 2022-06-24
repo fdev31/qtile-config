@@ -26,7 +26,6 @@
 # SOFTWARE.
 # }}}
 import os
-import subprocess
 
 import re  # {{{
 from typing import List  # noqa: F401
@@ -40,10 +39,11 @@ from libqtile import extension  # }}}
 APP_FILES = "caja"
 APP_WEB = "brave"
 APP_TERM = "kitty"
-USE_CUSTOM_KEYS = (
-    True  # set to False to run ./gen-keybinding-img, current keys are for French azerty
-)
-WORKMODE = False
+
+# set to False to run ./gen-keybinding-img, current keys are for French azerty
+USE_CUSTOM_KEYS = not os.environ.get("NO_CUSTOM_KEYS")
+
+WORK_MODE = os.path.exists(os.path.expanduser("~/liberty"))
 
 mod = "mod4"
 
@@ -442,7 +442,7 @@ keys.extend(
 )
 
 
-if WORKMODE:
+if WORK_MODE:
     keys.extend(
         [
             Key(
@@ -487,6 +487,23 @@ backlight_control = (
     else []
 )
 
+gen_widgets_opts = dict(
+    border_width=1,
+    padding=0,
+    width=graph_width,
+    type="line",
+    line_width=2,
+    graph_color="#EFCFA9",
+)
+hdd_widgets_opts = dict(
+    width=int(graph_width / 2),
+    border_width=0,
+    space_type="free",
+    frequency=60,
+    line_width=1,
+    type="box",
+)
+
 bottom_bar = (
     [
         widget.GroupBox(invert_mouse_wheel=True),
@@ -499,16 +516,16 @@ bottom_bar = (
     + backlight_control
     + [
         widget.TextBox(text="龍 ", padding=1),
-        widget.CPUGraph(width=graph_width, samples=graph_width * 2, padding=0),
-        widget.TextBox(text=" ", padding=1),
-        widget.MemoryGraph(width=graph_width, samples=graph_width * 2, padding=0),
+        widget.CPUGraph(samples=graph_width * 2, **gen_widgets_opts),
+        widget.TextBox(text=" ", padding=1),
+        widget.MemoryGraph(samples=graph_width * 2, **gen_widgets_opts),
         widget.TextBox(text=" ", padding=1),
-        widget.NetGraph(width=graph_width, samples=graph_width * 6, padding=0),
+        widget.NetGraph(samples=graph_width * 6, **gen_widgets_opts),
         widget.Sep(),
-        widget.TextBox(text="/", padding=1),
-        widget.HDDGraph(path="/", space_type="free", width=graph_width),
-        widget.TextBox(text="/home", padding=1),
-        widget.HDDGraph(path="/home", space_type="free", width=graph_width),
+        widget.TextBox(text="﫭 ", padding=1),
+        widget.HDDGraph(path="/", **hdd_widgets_opts),
+        widget.TextBox(text=" ", padding=1),
+        widget.HDDGraph(path="/home", **hdd_widgets_opts),
         widget.Sep(),
         widget.Clock(format="%a %d/%m %H:%M"),
     ]
