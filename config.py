@@ -326,6 +326,13 @@ for i, group in enumerate(group_def):
             ]
         )
 
+
+LOG_FILE = (
+    "/tmp/qtile-git.log"
+    if os.path.exists("/tmp/qtile-git.log")
+    else os.path.expanduser("~/.local/share/qtile/qtile.log")
+)
+
 # Scratchpad
 groups.append(
     ScratchPad(
@@ -341,7 +348,7 @@ groups.append(
             ),
             DropDown(
                 "qlog",
-                APP_TERM + " tail -f /tmp/qtile-git.log",
+                APP_TERM + " tail -f " + LOG_FILE,
                 opacity=0.88,
                 y=0.56,
                 height=0.40,
