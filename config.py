@@ -211,7 +211,6 @@ keys = [  # {{{
     Key([mod], "space", lazy.next_layout()),
     Key([mod], "c", lazy.window.kill()),
     Key([mod, "control"], "r", lazy.restart()),
-    #     Key([mod, "control"], "q", lazy.shutdown()),
 ]  # }}}
 
 # Groups definition {{{
@@ -605,39 +604,3 @@ focus_on_window_activation = "smart"
 # XXX JAVA COMPAT:
 wmname = "LG3D"
 # }}}
-
-# Auto move windows to groups {{{
-"""
-dynamic_names = {
-        re.compile('Slack | .* | Horizon 4.0'): Props(group=groups_by_id.chat.name),
-        re.compile('.*OMW - General .* - Flowdock'): Props(group=groups_by_id.chat.name),
-        re.compile('WhatsApp.*'): Props(group=groups_by_id.chat.name, wm_class='Navigator'),
-        }
-
-@hook.subscribe.client_name_updated
-def hook_move_to_group(client):
-    if not client.group:
-        return
-    name = client.window.get_name()
-    wm_classes = client.window.get_wm_class()
-    for expr, props in dynamic_names.items():
-        if expr.match(name):
-            if props.wm_class is None or props.wm_class in wm_classes:
-                client.togroup(props.group)
-                break
-
-# }}} vim:fdm=marker
-
-@hook.subscribe.window_state_change
-def conditional_fullscreen(client, state):
-    for name in client.window.get_wm_class():
-        if name == 'firefox':
-            if 'fullscreen' in state:
-                if not client.fullscreen: # and i_really_dont_want_fullscreen():
-                    state.remove('fullscreen')
-            else:
-                if client.fullscreen: # and i_really_dont_want_fullscreen():
-                    state.append('fullscreen')
-            break
-
-"""
