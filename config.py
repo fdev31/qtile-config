@@ -475,7 +475,7 @@ backlight_control = (
         ),
         widget.Sep(),
     ]
-    if os.path.exits(
+    if os.path.exists(
         "/sys/devices/pci0000:00/0000:00:08.1/0000:05:00.0/backlight/" + BL_DEVICE_NAME
     )
     else []
