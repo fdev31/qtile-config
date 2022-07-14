@@ -493,7 +493,7 @@ gen_widgets_opts = dict(
     width=graph_width,
     type="line",
     line_width=2,
-    graph_color="#EFCFA9",
+    graph_color="#DFDFDF",
 )
 hdd_widgets_opts = dict(
     width=int(graph_width / 2),
