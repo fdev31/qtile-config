@@ -524,8 +524,8 @@ bottom_bar = (
         widget.Sep(),
         widget.TextBox(text="﫭 ", padding=1),
         widget.HDDGraph(path="/", **hdd_widgets_opts),
-        widget.TextBox(text=" ", padding=1),
-        widget.HDDGraph(path="/home", **hdd_widgets_opts),
+        widget.TextBox(text=" " if WORK_MODE else " ", padding=1),
+        widget.HDDGraph(path="/stuff" if WORK_MODE else "/home", **hdd_widgets_opts),
         widget.Sep(),
         widget.Clock(format="%a %d/%m %H:%M"),
     ]
