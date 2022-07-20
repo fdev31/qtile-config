@@ -293,6 +293,8 @@ group_def = [
 # }}}
 
 # Groups creation {{{
+# test: for n in chat todo term mail gfx media nodes rec qtile ; do ; qtile cmd-obj -o cmd -f delgroup -a X$n ; done
+
 for i, group in enumerate(group_def):
     key = group.key if USE_CUSTOM_KEYS else str(i)[-1]
     g = Group(
