@@ -26,6 +26,7 @@
 # SOFTWARE.
 # }}}
 import os
+from socket import gethostname
 
 import re  # {{{
 from typing import List  # noqa: F401
@@ -504,6 +505,9 @@ hdd_widgets_opts = dict(
     type="box",
 )
 
+extra_hdd_icon = " " if (WORK_MODE or gethostname() == "popo") else " "
+extra_hdd_path = "/stuff" if WORK_MODE else ("/home/fab/grosdisk" if gethostname() == "popo" else "/home")
+
 bottom_bar = (
     [
         widget.GroupBox(invert_mouse_wheel=True, highlight_method='block', center_aligned=False, disable_drag=True, inactive='#777777', active='#EEEEFF', padding_x=5, spacing=0),
@@ -524,8 +528,8 @@ bottom_bar = (
         widget.Sep(),
         widget.TextBox(text="﫭 ", padding=1),
         widget.HDDGraph(path="/", **hdd_widgets_opts),
-        widget.TextBox(text=" " if WORK_MODE else " ", padding=1),
-        widget.HDDGraph(path="/stuff" if WORK_MODE else "/home", **hdd_widgets_opts),
+        widget.TextBox(text=extra_hdd_icon, padding=1),
+        widget.HDDGraph(path=extra_hdd_path, **hdd_widgets_opts),
         widget.Sep(),
         widget.Clock(format="%a %d/%m %H:%M"),
     ]
