@@ -471,7 +471,14 @@ extension_defaults = widget_defaults.copy()
 
 graph_width = 22
 
-BL_DEVICE_NAME = "amdgpu_bl1"
+BL_DEVICE_NAME = "amdgpu_bl"
+BL_PATH = "/sys/devices/pci0000:00/0000:00:08.1/0000:05:00.0/backlight/"
+
+for n in range(3):
+    if os.path.exists(os.path.join(BL_PATH, BL_DEVICE_NAME + str(n))):
+        BL_DEVICE_NAME += str(n)
+        break
+
 backlight_control = (
     [
         widget.Backlight(
@@ -482,9 +489,7 @@ backlight_control = (
         ),
         widget.Sep(),
     ]
-    if os.path.exists(
-        "/sys/devices/pci0000:00/0000:00:08.1/0000:05:00.0/backlight/" + BL_DEVICE_NAME
-    )
+    if os.path.exists(BL_PATH + BL_DEVICE_NAME)
     else []
 )
 
@@ -506,11 +511,24 @@ hdd_widgets_opts = dict(
 )
 
 extra_hdd_icon = "" if (WORK_MODE or gethostname() == "popo") else "🏠"
-extra_hdd_path = "/stuff" if WORK_MODE else ("/home/fab/grosdisk" if gethostname() == "popo" else "/home")
+extra_hdd_path = (
+    "/stuff"
+    if WORK_MODE
+    else ("/home/fab/grosdisk" if gethostname() == "popo" else "/home")
+)
 
 bottom_bar = (
     [
-        widget.GroupBox(invert_mouse_wheel=True, highlight_method='block', center_aligned=False, disable_drag=True, inactive='#777777', active='#EEEEFF', padding_x=5, spacing=0),
+        widget.GroupBox(
+            invert_mouse_wheel=True,
+            highlight_method="block",
+            center_aligned=False,
+            disable_drag=True,
+            inactive="#777777",
+            active="#EEEEFF",
+            padding_x=5,
+            spacing=0,
+        ),
         widget.Prompt(),
         widget.TaskList(),
         widget.CurrentLayout(),
