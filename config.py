@@ -225,7 +225,6 @@ class Props(dict):
 
 
 groups = []
-groups_by_id = Props()
 
 # ICONS: 什擄來洛 烙落 酪 駱藍燎亮咽 溜 琉 阮蓼切盧
 
@@ -305,7 +304,6 @@ for i, group in enumerate(group_def):
         if group.wm_classes
         else None,
     )
-    groups_by_id[group.name] = g
     groups.append(g)
 
     if key:
