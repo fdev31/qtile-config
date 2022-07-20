@@ -504,7 +504,7 @@ hdd_widgets_opts = dict(
 
 bottom_bar = (
     [
-        widget.GroupBox(invert_mouse_wheel=True),
+        widget.GroupBox(invert_mouse_wheel=True, highlight_method='block', center_aligned=False, disable_drag=True, inactive='#777777', active='#EEEEFF', padding_x=5, spacing=0),
         widget.Prompt(),
         widget.TaskList(),
         widget.CurrentLayout(),
