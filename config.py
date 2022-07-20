@@ -297,7 +297,7 @@ for i, group in enumerate(group_def):
     key = group.key if USE_CUSTOM_KEYS else str(i)[-1]
     g = Group(
         name=group.name,
-        label="%s%s" % ((str(i + 1))[-1], group.icon) if group.key else group.icon,
+        label="%s %s" % ((str(i + 1))[-1], group.icon) if group.key else group.icon,
         layout=group.layout or "bsp",
         spawn=group.spawn,
         matches=[Match(wm_class=c) for c in group.wm_classes]
