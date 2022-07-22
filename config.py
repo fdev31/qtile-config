@@ -510,7 +510,7 @@ hdd_widgets_opts = dict(
     type="box",
 )
 
-extra_hdd_icon = "" if (WORK_MODE or gethostname() == "popo") else "🏠"
+extra_hdd_icon = " " if (WORK_MODE or gethostname() == "popo") else "🏠 "
 extra_hdd_path = (
     "/stuff"
     if WORK_MODE
@@ -537,14 +537,14 @@ bottom_bar = (
     ]
     + backlight_control
     + [
-        widget.TextBox(text="🧠", padding=1),
+        widget.TextBox(text=" ", padding=1),
         widget.CPUGraph(samples=graph_width * 2, **gen_widgets_opts),
-        widget.TextBox(text="", padding=1),
+        widget.TextBox(text=" ", padding=1),
         widget.MemoryGraph(samples=graph_width * 2, **gen_widgets_opts),
-        widget.TextBox(text="", padding=1),
+        widget.TextBox(text=" ", padding=1),
         widget.NetGraph(samples=graph_width * 6, **gen_widgets_opts),
         widget.Sep(),
-        widget.TextBox(text="", padding=1),
+        widget.TextBox(text=" ", padding=1),
         widget.HDDGraph(path="/", **hdd_widgets_opts),
         widget.TextBox(text=extra_hdd_icon, padding=1),
         widget.HDDGraph(path=extra_hdd_path, **hdd_widgets_opts),
