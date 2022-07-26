@@ -471,25 +471,33 @@ extension_defaults = widget_defaults.copy()
 
 graph_width = 22
 
-BL_DEVICE_NAME = "amdgpu_bl"
-BL_PATH = "/sys/devices/pci0000:00/0000:00:08.1/0000:05:00.0/backlight/"
+DEVICES_ROOT = '/sys/devices/pci0000:00'
+VALID_BL_DEVICES = [
+'0000:00:02.0/drm/card0/card0-eDP-1/intel_backlight',
+'0000:00:08.1/0000:05:00.0/backlight/amdgpu_bl0',
+'0000:00:08.1/0000:05:00.0/backlight/amdgpu_bl1',
+'0000:00:08.1/0000:05:00.0/backlight/amdgpu_bl2',
+]
 
-for n in range(3):
-    if os.path.exists(os.path.join(BL_PATH, BL_DEVICE_NAME + str(n))):
-        BL_DEVICE_NAME += str(n)
+
+global BL_DEVICE_NAME
+BL_DEVICE_NAME = None
+for n in VALID_BL_DEVICES:
+    if os.path.exists(os.path.join(DEVICES_ROOT, n)):
+        BL_DEVICE_NAME = n
         break
 
 backlight_control = (
     [
         widget.Backlight(
-            backlight_name=BL_DEVICE_NAME,
-            format="💡  {percent:2.0%}",
+            backlight_name=BL_DEVICE_NAME.rsplit('/', 1)[1],
+            format="  {percent:2.0%}",
             change_command="brightnessctl s {0}%",
             step=2,
         ),
         widget.Sep(),
     ]
-    if os.path.exists(BL_PATH + BL_DEVICE_NAME)
+    if BL_DEVICE_NAME
     else []
 )
 
