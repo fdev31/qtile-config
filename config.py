@@ -266,7 +266,8 @@ group_def = [
         icon="更",
         name="rec",
         key="egrave",
-        wm_classes=["Zim"],
+        layout="max",
+        wm_classes=["Lutris", "epicgameslauncher.exe"],
     ),
     Props(
         icon="瑩",
