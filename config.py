@@ -136,6 +136,7 @@ keys = [  # {{{
     Key([mod], "s", lazy.window.toggle_floating()),
     Key([mod], "f", lazy.window.toggle_fullscreen()),
     Key([mod], "n", lazy.window.toggle_minimize()),
+    Key([mod, "shift"], "n", lazy.window.toggle_maximize()),
     Key([mod], "t", lazy.spawn(APP_FILES)),
     Key([mod], "w", lazy.spawn(APP_WEB)),
     Key([mod], "b", lazy.hide_show_bar()),
