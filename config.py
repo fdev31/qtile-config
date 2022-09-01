@@ -567,19 +567,6 @@ screens = [
     Screen(
         bottom=bar.Bar(bottom_bar, 24),
     ),
-    Screen(
-        bottom=bar.Bar(
-            [
-                widget.CurrentLayout(),
-                widget.GroupBox(),
-                widget.Prompt(),
-                widget.WindowName(),
-                widget.Sep(),
-                widget.Clock(format="%a %d/%m %H:%M"),
-            ],
-            24,
-        ),
-    ),
 ]  # }}}
 
 # Drag floating layouts. {{{
