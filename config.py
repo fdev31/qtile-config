@@ -460,8 +460,8 @@ if WORK_MODE:
 # Screens : layouts & widgets {{{
 layouts = [
     layout.Max(),
-    layout.Bsp(),
-    layout.Columns(fair=True),
+    layout.Bsp(border_focus="#7777AF", border_width=1),
+    layout.Columns(fair=True, border_focus="#7777AF", border_width=1),
 ]
 
 widget_defaults = dict(
