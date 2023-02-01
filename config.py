@@ -86,10 +86,10 @@ def moveToGroup(qtile, direction, skip_empty=False, move_window=False):
 @lazy.function
 def raiseFloatingWindows(qtile):
     """Raises floating windows to the top"""
-    for group in qtile.groups:
-        for window in group.windows:
-            if window.floating:
-                window.cmd_bring_to_front()
+    for g in qtile.groups:
+        for window in g.windows:
+            if window.floating and not window.fullscreen:
+                window.bring_to_front()
 
 
 @lazy.function
@@ -430,8 +430,9 @@ def toggleDropDown(qtile, groupname, dropdowns):
         else:
             try:
                 dd[name].show()
+                dd[name].window.bring_to_front()
             except KeyError:
-                qtile.groups_map[groupname].cmd_dropdown_toggle(name)
+                qtile.groups_map[groupname].dropdown_toggle(name)
     if first:
         dd[first].window.focus(warp=True)
 
