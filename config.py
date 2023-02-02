@@ -114,6 +114,7 @@ keys = [  # {{{
     Key([mod, "shift"], "r", raiseFloatingWindows, desc="raise floating"),
     Key([mod], "o", moveToNextScreen, desc="move to next screen"),
     Key([mod], "p", lazy.next_screen(), desc="go to next screen"),
+    Key([mod, "shift"], "p", lazy.spawn("passwordList.sh"), desc="Pick a password"),
     Key([mod], "r", lazy.spawn("mymenu.sh"), desc="shortcuts menu"),
     Key(
         [mod],
@@ -435,6 +436,7 @@ def toggleDropDown(qtile, groupname, dropdowns):
                 qtile.groups_map[groupname].dropdown_toggle(name)
     if first:
         dd[first].window.focus(warp=True)
+        dd[first].window.bring_to_front()
 
 
 keys.extend(
@@ -628,7 +630,7 @@ floating_layout = layout.Floating(
         Match(wm_class="control.exe", title=re.compile(".*Wine")),
     ],
 )
-auto_fullscreen = True
+auto_fullscreen = False
 
 auto_fullscreen_exceptions = (
     Match(wm_class="firefox"),
