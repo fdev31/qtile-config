@@ -103,7 +103,9 @@ def goToUrgent(qtile):
             qtile.current_screen.set_group(group)
             break
 
+
 sticky_windows = []
+
 
 @lazy.function
 def toggle_sticky_windows(qtile, window=None):
@@ -115,16 +117,19 @@ def toggle_sticky_windows(qtile, window=None):
         sticky_windows.append(window)
     return window
 
+
 @hook.subscribe.setgroup
 def move_sticky_windows():
     for window in sticky_windows:
         window.togroup()
     return
 
+
 @hook.subscribe.client_killed
 def remove_sticky_windows(window):
     if window in sticky_windows:
         sticky_windows.remove(window)
+
 
 # }}}
 
@@ -147,6 +152,7 @@ keys = [  # {{{
                 "rofi -show combi -combi-modi window,drun -modi combi -theme ~/.config/rofi/launchers/colorful/custom"
             )
         ),
+        desc="Custom menu",
     ),
     Key([mod], "d", lazy.spawn("doNotDisturb"), desc="toggle notifications"),
     Key([mod], "l", lazy.spawn("mate-screensaver-command -l"), desc="lock screen"),
@@ -161,8 +167,8 @@ keys = [  # {{{
     Key([mod], "f", lazy.window.toggle_fullscreen()),
     Key([mod], "n", lazy.window.toggle_minimize()),
     Key([mod, "shift"], "n", lazy.window.toggle_maximize()),
-    Key([mod], "t", lazy.spawn(APP_FILES)),
-    Key([mod], "w", lazy.spawn(APP_WEB)),
+    Key([mod], "t", lazy.spawn(APP_FILES), desc="spawn file manager"),
+    Key([mod], "w", lazy.spawn(APP_WEB), desc="spawn web browser"),
     Key([mod], "b", lazy.hide_show_bar()),
     Key([mod], "Escape", lazy.screen.toggle_group()),
     # Switch between windows in current stack pane
@@ -187,25 +193,25 @@ keys = [  # {{{
         [mod, "mod1"],
         "j",
         lazy.function(moveToGroup, -1, False, True),
-        desc="move to prev group",
+        desc="move window to prev group",
     ),
     Key(
         [mod, "mod1"],
         "k",
         lazy.function(moveToGroup, 1, False, True),
-        desc="move to next group",
+        desc="move window to next group",
     ),
     Key(
         [mod, "mod1", "shift"],
         "j",
         lazy.function(moveToGroup, -1, True, True),
-        desc="move to prev used group",
+        desc="move window to prev used group",
     ),
     Key(
         [mod, "mod1", "shift"],
         "k",
         lazy.function(moveToGroup, 1, True, True),
-        desc="move to next used group",
+        desc="move window to next used group",
     ),
     # Move windows up or down in current stack
     Key([mod, "mod1"], "Up", lazy.layout.shuffle_up()),
@@ -232,12 +238,16 @@ keys = [  # {{{
     # multiple stack panes
     Key([mod], "BackSpace", lazy.layout.toggle_split()),
     Key([mod, "shift"], "BackSpace", lazy.layout.normalize()),
-    Key([mod], "Return", lazy.spawn(APP_TERM)),
+    Key([mod], "Return", lazy.spawn(APP_TERM), desc="Spawn terminal"),
     # Toggle between different layouts as defined below
     Key([mod], "space", lazy.next_layout()),
-    Key([mod], "c", lazy.window.kill()),
+    Key([mod], "c", lazy.window.kill(), desc="Close window"),
     Key([mod, "control"], "r", lazy.restart()),
-    Key([mod, "shift"], "s", toggle_sticky_windows(), desc="Toggle state of sticky for current window",
+    Key(
+        [mod, "shift"],
+        "s",
+        toggle_sticky_windows(),
+        desc="toggle window's sticky state",
     ),
 ]  # }}}
 
@@ -466,9 +476,19 @@ def toggleDropDown(qtile, groupname, dropdowns):
 
 keys.extend(
     [
-        Key([mod], "a", lazy.function(toggleDropDown, "scratchpad", ["term", "qlog"])),
-        Key([mod], "v", lazy.function(toggleDropDown, "volume", ["pavucontrol"])),
-        Key([mod], "x", lazy.spawn("toggleCapture")),
+        Key(
+            [mod],
+            "a",
+            lazy.function(toggleDropDown, "scratchpad", ["term", "qlog"]),
+            desc="Toggle scratchpad",
+        ),
+        Key(
+            [mod],
+            "v",
+            lazy.function(toggleDropDown, "volume", ["pavucontrol"]),
+            desc="Toggle Mixer panel",
+        ),
+        Key([mod], "x", lazy.spawn("toggleCapture"), desc="custom command"),
     ]
 )
 
@@ -656,16 +676,27 @@ floating_layout = layout.Floating(
     ],
 )
 
-floating_types = ["notification", "toolbar", "splash", "dialog",
-                  "utility", "menu", "dropdown_menu", "popup_menu", "tooltip,dock",
-                  ]
+floating_types = [
+    "notification",
+    "toolbar",
+    "splash",
+    "dialog",
+    "utility",
+    "menu",
+    "dropdown_menu",
+    "popup_menu",
+    "tooltip,dock",
+]
 
 
 @hook.subscribe.client_new
 def set_floating(window):
-    if (window.window.get_wm_transient_for()
-            or window.window.get_wm_type() in floating_types):
+    if (
+        window.window.get_wm_transient_for()
+        or window.window.get_wm_type() in floating_types
+    ):
         window.floating = True
+
 
 auto_fullscreen = False
 
