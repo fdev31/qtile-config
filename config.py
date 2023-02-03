@@ -1,3 +1,4 @@
+# vim: fdm=marker
 # {{{
 # Copyright (c) 2010 Aldo Cortesi
 # Copyright (c) 2010, 2014 dequis
@@ -25,17 +26,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 # }}}
-import os
-from socket import gethostname
 
-import re  # {{{
+# imports {{{
+import os
+import re
+from socket import gethostname
 from typing import List  # noqa: F401
 from libqtile.config import Key, Screen, Group, Drag, Click
 from libqtile.config import ScratchPad, DropDown, Match
 from libqtile.lazy import lazy
 from libqtile import layout, bar, widget, hook
 from libqtile import extension  # }}}
-
 
 APP_FILES = "caja"
 APP_WEB = "brave"
@@ -102,6 +103,28 @@ def goToUrgent(qtile):
             qtile.current_screen.set_group(group)
             break
 
+sticky_windows = []
+
+@lazy.function
+def toggle_sticky_windows(qtile, window=None):
+    if window is None:
+        window = qtile.current_screen.group.current_window
+    if window in sticky_windows:
+        sticky_windows.remove(window)
+    else:
+        sticky_windows.append(window)
+    return window
+
+@hook.subscribe.setgroup
+def move_sticky_windows():
+    for window in sticky_windows:
+        window.togroup()
+    return
+
+@hook.subscribe.client_killed
+def remove_sticky_windows(window):
+    if window in sticky_windows:
+        sticky_windows.remove(window)
 
 # }}}
 
@@ -214,6 +237,8 @@ keys = [  # {{{
     Key([mod], "space", lazy.next_layout()),
     Key([mod], "c", lazy.window.kill()),
     Key([mod, "control"], "r", lazy.restart()),
+    Key([mod, "shift"], "s", toggle_sticky_windows(), desc="Toggle state of sticky for current window",
+    ),
 ]  # }}}
 
 # Groups definition {{{
@@ -624,12 +649,24 @@ floating_layout = layout.Floating(
         Match(wm_class="Steam"),
         Match(title="branchdialog"),  # gitk
         Match(title="pinentry"),  # GPG key password entry
-        Match(title="safeeyes"),  # GPG key password entry
+        Match(title="safeeyes"),
         Match(title=re.compile("Android Emulator.*")),
         Match(wm_class="wineboot.exe", title=re.compile(".*Wine")),
         Match(wm_class="control.exe", title=re.compile(".*Wine")),
     ],
 )
+
+floating_types = ["notification", "toolbar", "splash", "dialog",
+                  "utility", "menu", "dropdown_menu", "popup_menu", "tooltip,dock",
+                  ]
+
+
+@hook.subscribe.client_new
+def set_floating(window):
+    if (window.window.get_wm_transient_for()
+            or window.window.get_wm_type() in floating_types):
+        window.floating = True
+
 auto_fullscreen = False
 
 auto_fullscreen_exceptions = (
