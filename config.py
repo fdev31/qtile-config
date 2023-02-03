@@ -384,15 +384,15 @@ groups.append(
                 on_focus_lost_hide=False,
                 width=0.80,
             ),
-            DropDown(
-                "qlog",
-                APP_TERM + " tail -f " + LOG_FILE,
-                opacity=0.88,
-                y=0.86,
-                height=0.10,
-                on_focus_lost_hide=False,
-                width=0.80,
-            ),
+            #             DropDown(
+            #                 "qlog",
+            #                 APP_TERM + " tail -f " + LOG_FILE,
+            #                 opacity=0.88,
+            #                 y=0.86,
+            #                 height=0.10,
+            #                 on_focus_lost_hide=False,
+            #                 width=0.80,
+            #             ),
         ],
     )
 )
