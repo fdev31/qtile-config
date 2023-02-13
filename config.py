@@ -669,7 +669,7 @@ floating_layout = layout.Floating(
         Match(wm_class="Steam"),
         Match(title="branchdialog"),  # gitk
         Match(title="pinentry"),  # GPG key password entry
-        Match(title="safeeyes"),
+        Match(title=re.compile("SafeEyes*")),
         Match(title=re.compile("Android Emulator.*")),
         Match(wm_class="wineboot.exe", title=re.compile(".*Wine")),
         Match(wm_class="control.exe", title=re.compile(".*Wine")),
