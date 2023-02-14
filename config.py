@@ -379,7 +379,7 @@ groups.append(
             DropDown(
                 "term",
                 APP_TERM,
-                opacity=0.88,
+                # opacity=0.88,
                 height=0.85,
                 on_focus_lost_hide=False,
                 width=0.80,
@@ -404,7 +404,7 @@ groups.append(
             DropDown(
                 "pavucontrol",
                 "/usr/bin/pavucontrol",
-                opacity=0.88,
+                opacity=0.9,
                 height=0.95,
                 width=0.60,
             ),
