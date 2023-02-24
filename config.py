@@ -368,7 +368,7 @@ groups.append(
             DropDown(
                 "pavucontrol",
                 "/usr/bin/pavucontrol",
-                opacity=0.9,
+                opacity=0.8,
                 height=0.95,
                 width=0.60,
             ),
@@ -698,10 +698,11 @@ def set_floating(window):
     # }}}
     for cls in window.get_wm_class():
         if cls in opaque_windows:
-            window.opacity = 1.0
             break
     else:
-        window.opacity = 0.9
+        pass
+        if window.opacity == 1.0:
+            window.opacity = 0.9
     if (
         window.window.get_wm_transient_for()
         or window.window.get_wm_type() in floating_types
