@@ -691,6 +691,7 @@ floating_types = [
 
 @hook.subscribe.client_new
 def set_floating(window):
+    window.opacity = 0.9
     if (
         window.window.get_wm_transient_for()
         or window.window.get_wm_type() in floating_types
