@@ -105,38 +105,7 @@ def goToUrgent(qtile):
             break
 
 
-sticky_windows = []
-
-
-@lazy.function
-def toggle_sticky_windows(qtile, window=None):
-    if window is None:
-        window = qtile.current_screen.group.current_window
-    if window in sticky_windows:
-        sticky_windows.remove(window)
-    else:
-        sticky_windows.append(window)
-    return window
-
-
-@hook.subscribe.setgroup
-def move_sticky_windows():
-    for window in sticky_windows:
-        window.togroup()
-    return
-
-
-@hook.subscribe.client_killed
-def remove_sticky_windows(window):
-    if window in sticky_windows:
-        sticky_windows.remove(window)
-
-
 # }}}
-
-# NOTE: nice run menus:
-# /usr/bin/rofi -modi run,drun -show drun run
-# rofi -show combi -modi combi -combi-modi window,run,ssh
 
 keys = [  # {{{
     # Custom commands
@@ -244,12 +213,6 @@ keys = [  # {{{
     Key([mod], "space", lazy.next_layout()),
     Key([mod], "c", lazy.window.kill(), desc="Close window"),
     Key([mod, "control"], "r", lazy.restart()),
-    Key(
-        [mod, "shift"],
-        "s",
-        toggle_sticky_windows(),
-        desc="toggle window's sticky state",
-    ),
 ]  # }}}
 
 # Groups definition {{{
@@ -507,10 +470,23 @@ if WORK_MODE:
 # }}}
 
 # Screens : layouts & widgets {{{
+# "#FF77FF"
 layouts = [
     layout.Max(),
-    layout.Bsp(border_focus="#7777AF", border_width=2, margin=MARGIN),
-    layout.Columns(fair=True, border_focus="#7777AF", border_width=2, margin=MARGIN),
+    layout.Bsp(
+        border_focus="#88a8FF",
+        border_width=2,
+        border_normal="#555",
+        border_on_single=False,
+        margin=MARGIN,
+    ),
+    layout.Columns(
+        fair=True,
+        border_focus="#88a8FF",
+        border_width=2,
+        border_normal="#555",
+        margin=MARGIN,
+    ),
 ]
 
 widget_defaults = dict(
@@ -679,28 +655,19 @@ floating_layout = layout.Floating(
     ],
 )
 
-floating_types = [
-    "notification",
-    "toolbar",
-    "splash",
-    "dialog",
-    "utility",
-    "menu",
-    "dropdown_menu",
-    "popup_menu",
-    "tooltip,dock",
-]
-
-
-@hook.subscribe.client_new
-def set_floating(window):
-    window.opacity = 0.9
-    if (
-        window.window.get_wm_transient_for()
-        or window.window.get_wm_type() in floating_types
-    ):
-        window.floating = True
-
+floating_types = set(
+    [
+        "notification",
+        "toolbar",
+        "splash",
+        "dialog",
+        "utility",
+        "menu",
+        "dropdown_menu",
+        "popup_menu",
+        "tooltip" "dock",
+    ]
+)
 
 auto_fullscreen = False
 
@@ -714,4 +681,69 @@ focus_on_window_activation = "smart"
 
 # XXX JAVA COMPAT:
 wmname = "LG3D"
+# }}}
+
+# Hooks {{{
+opaque_windows = set(["Blender", "brave-browser"])
+
+
+@hook.subscribe.client_new
+def set_floating(window):
+    # Debug log {{{
+    #    log = open('/tmp/x.log','a+')
+    #    log.write( str(window.get_wm_class()))
+    #    log.write( repr(window.window.get_wm_type()))
+    #    log.write('\n')
+    #    log.flush()
+    # }}}
+    for cls in window.get_wm_class():
+        if cls in opaque_windows:
+            window.opacity = 1.0
+            break
+    else:
+        window.opacity = 0.9
+    if (
+        window.window.get_wm_transient_for()
+        or window.window.get_wm_type() in floating_types
+    ):
+        window.floating = True
+
+
+# }}}
+# Sticky {{{
+sticky_windows = []
+
+
+@lazy.function
+def toggle_sticky_windows(qtile, window=None):
+    if window is None:
+        window = qtile.current_screen.group.current_window
+    if window in sticky_windows:
+        sticky_windows.remove(window)
+    else:
+        sticky_windows.append(window)
+    return window
+
+
+@hook.subscribe.setgroup
+def move_sticky_windows():
+    for window in sticky_windows:
+        window.togroup()
+    return
+
+
+@hook.subscribe.client_killed
+def remove_sticky_windows(window):
+    if window in sticky_windows:
+        sticky_windows.remove(window)
+
+
+keys.append(
+    Key(
+        [mod, "shift"],
+        "s",
+        toggle_sticky_windows(),
+        desc="toggle window's sticky state",
+    )
+)
 # }}}
