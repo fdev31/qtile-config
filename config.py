@@ -476,7 +476,7 @@ layouts = [
     layout.Bsp(
         border_focus="#88a8FF",
         border_width=2,
-        border_normal="#555",
+        border_normal="#323232",
         border_on_single=False,
         margin=MARGIN,
     ),
@@ -484,7 +484,7 @@ layouts = [
         fair=True,
         border_focus="#88a8FF",
         border_width=2,
-        border_normal="#555",
+        border_normal="#323232",
         margin=MARGIN,
     ),
 ]
@@ -684,7 +684,8 @@ wmname = "LG3D"
 # }}}
 
 # Hooks {{{
-opaque_windows = set(["Blender", "brave-browser"])
+opaque_windows = set(["Blender", "brave-browser", "Code"])
+opacity_overrides = {"Code": 0.95}
 
 
 @hook.subscribe.client_new
@@ -698,9 +699,10 @@ def set_floating(window):
     # }}}
     for cls in window.get_wm_class():
         if cls in opaque_windows:
-            break
+            if cls in opacity_overrides:
+                window.opacity = opacity_overrides[cls]
+                break
     else:
-        pass
         if window.opacity == 1.0:
             window.opacity = 0.9
     if (
