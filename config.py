@@ -38,6 +38,7 @@ from libqtile.lazy import lazy
 from libqtile import layout, bar, widget, hook
 from libqtile import extension  # }}}
 
+MARGIN = 2
 APP_FILES = "caja"
 APP_WEB = "brave"
 APP_TERM = "kitty"
@@ -508,8 +509,8 @@ if WORK_MODE:
 # Screens : layouts & widgets {{{
 layouts = [
     layout.Max(),
-    layout.Bsp(border_focus="#7777AF", border_width=1),
-    layout.Columns(fair=True, border_focus="#7777AF", border_width=1),
+    layout.Bsp(border_focus="#7777AF", border_width=2, margin=MARGIN),
+    layout.Columns(fair=True, border_focus="#7777AF", border_width=2, margin=MARGIN),
 ]
 
 widget_defaults = dict(
@@ -613,7 +614,9 @@ bottom_bar = (
 
 screens = [
     Screen(
-        bottom=bar.Bar(bottom_bar, 24),
+        bottom=bar.Bar(
+            bottom_bar, 24, opacity=0.75, margin=[MARGIN, MARGIN * 2, 0, MARGIN * 2]
+        ),
     ),
 ]  # }}}
 
