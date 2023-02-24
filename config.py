@@ -591,7 +591,7 @@ bottom_bar = (
 screens = [
     Screen(
         bottom=bar.Bar(
-            bottom_bar, 24, opacity=0.75, margin=[MARGIN, MARGIN * 2, 0, MARGIN * 2]
+            bottom_bar, 24, opacity=0.75, margin=[0, MARGIN * 2, 0, MARGIN * 2]
         ),
     ),
 ]  # }}}
