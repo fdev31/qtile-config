@@ -546,6 +546,7 @@ extra_hdd_path = (
 
 bottom_bar = (
     [
+        widget.CurrentLayoutIcon(scale=0.7),
         widget.GroupBox(
             invert_mouse_wheel=True,
             highlight_method="block",
@@ -558,7 +559,6 @@ bottom_bar = (
         ),
         widget.Prompt(),
         widget.TaskList(),
-        widget.CurrentLayout(),
         widget.Systray(),
         widget.Sep(),
     ]
