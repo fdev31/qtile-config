@@ -675,8 +675,11 @@ floats_kept_above = True
 wmname = "LG3D"
 # }}}
 # Hooks {{{
-opaque_windows = set(["Blender", "Brave-browser", "Code", "Popcorn-Time"])
-opacity_overrides = {"Code": 0.95}
+# if no override found, will be fully opaque
+opacity_exceptions = set(
+    ["Blender", "Brave-browser", "Code", "Popcorn-Time", "ferdium"]
+)
+opacity_overrides = {"Code": 0.95, "ferdium": 0.8}
 
 
 @hook.subscribe.client_new
@@ -689,7 +692,7 @@ def set_floating(window):
     #    log.flush()
     # }}}
     for cls in window.get_wm_class():
-        if cls in opaque_windows:
+        if cls in opacity_exceptions:
             window.opacity = opacity_overrides.get(cls, 1.0)
             break
     else:
