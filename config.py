@@ -26,12 +26,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 # }}}
-
 # imports {{{
 import os
 import re
 from socket import gethostname
-from typing import List  # noqa: F401
+from typing import List
+from libqtile.backend.base import Window  # noqa: F401
 from libqtile.config import Key, Screen, Group, Drag, Click
 from libqtile.config import ScratchPad, DropDown, Match
 from libqtile.lazy import lazy
@@ -42,17 +42,12 @@ MARGIN = 2
 APP_FILES = "caja"
 APP_WEB = "brave"
 APP_TERM = "kitty"
-
 # set to False to run ./gen-keybinding-img, current keys are for French azerty
 USE_CUSTOM_KEYS = not os.environ.get("NO_CUSTOM_KEYS")
-
 WORK_MODE = os.path.exists(os.path.expanduser("~/liberty"))
 
 mod = "mod4"
-
 # Action functions {{{
-
-
 @lazy.function
 def moveToNextScreen(qtile):
     """Move active win to next screen"""
@@ -106,7 +101,6 @@ def goToUrgent(qtile):
 
 
 # }}}
-
 keys = [  # {{{
     # Custom commands
     Key([mod, "shift"], "r", raiseFloatingWindows, desc="raise floating"),
@@ -214,11 +208,12 @@ keys = [  # {{{
     Key([mod], "c", lazy.window.kill(), desc="Close window"),
     Key([mod, "control"], "r", lazy.restart()),
 ]  # }}}
-
 # Groups definition {{{
-
-
 class Props(dict):
+    icon: str
+    name: str
+    key: str
+
     def __getattr__(self, attr):
         try:
             return self[attr]
@@ -226,10 +221,8 @@ class Props(dict):
             return
 
 
-groups = []
-
+groups: list[Group] = []
 # ICONS: 什擄來洛 烙落 酪 駱藍燎亮咽 溜 琉 阮蓼切盧
-
 group_def = [
     Props(
         icon="",
@@ -294,7 +287,6 @@ group_def = [
     ),
 ]
 # }}}
-
 # Groups creation {{{
 # test: for n in chat todo term mail gfx media nodes rec qtile ; do ; qtile cmd-obj -o cmd -f delgroup -a X$n ; done
 
@@ -343,9 +335,10 @@ groups.append(
             DropDown(
                 "term",
                 APP_TERM,
-                # opacity=0.88,
-                height=0.85,
+                opacity=0.7,
+                height=0.65,
                 on_focus_lost_hide=False,
+                kept_above=True,
                 width=0.80,
             ),
             #             DropDown(
@@ -430,13 +423,14 @@ def toggleDropDown(qtile, groupname, dropdowns):
         else:
             try:
                 dd[name].show()
-                dd[name].window.bring_to_front()
+                # dd[name].window.bring_to_front()
             except KeyError:
                 qtile.groups_map[groupname].dropdown_toggle(name)
     if first:
         dd[first].window.focus(warp=True)
-        dd[first].window.bring_to_front()
 
+
+#         dd[first].window.bring_to_front()
 
 keys.extend(
     [
@@ -456,7 +450,6 @@ keys.extend(
     ]
 )
 
-
 if WORK_MODE:
     keys.extend(
         [
@@ -468,7 +461,6 @@ if WORK_MODE:
         ]
     )
 # }}}
-
 # Screens : layouts & widgets {{{
 # "#FF77FF"
 layouts = [
@@ -595,7 +587,6 @@ screens = [
         ),
     ),
 ]  # }}}
-
 # Drag floating layouts. {{{
 mouse = [
     Drag(
@@ -609,7 +600,6 @@ mouse = [
     ),
     Click([mod], "Button2", lazy.window.bring_to_front()),
 ]  # }}}
-
 # Misc / floating {{{
 dgroups_key_binder = None
 dgroups_app_rules = []  # type: List
@@ -617,7 +607,6 @@ main = None  # WARNING: this is deprecated and will be removed soon
 follow_mouse_focus = True
 bring_front_click = False
 cursor_warp = False
-
 
 floating_layout = layout.Floating(
     border_width=0,
@@ -669,22 +658,24 @@ floating_types = set(
     ]
 )
 
-auto_fullscreen = False
+auto_fullscreen = True
 
+"""
 auto_fullscreen_exceptions = (
     Match(wm_class="firefox"),
     Match(wm_class="google-chrome"),
 )
+"""
 
 # focus_on_window_activation = "urgent"
 focus_on_window_activation = "smart"
+floats_kept_above = True
 
 # XXX JAVA COMPAT:
 wmname = "LG3D"
 # }}}
-
 # Hooks {{{
-opaque_windows = set(["Blender", "brave-browser", "Code"])
+opaque_windows = set(["Blender", "Brave-browser", "Code", "Popcorn-Time"])
 opacity_overrides = {"Code": 0.95}
 
 
@@ -699,12 +690,10 @@ def set_floating(window):
     # }}}
     for cls in window.get_wm_class():
         if cls in opaque_windows:
-            if cls in opacity_overrides:
-                window.opacity = opacity_overrides[cls]
-                break
+            window.opacity = opacity_overrides.get(cls, 1.0)
+            break
     else:
-        if window.opacity == 1.0:
-            window.opacity = 0.9
+        window.opacity = 0.95
     if (
         window.window.get_wm_transient_for()
         or window.window.get_wm_type() in floating_types
@@ -714,7 +703,7 @@ def set_floating(window):
 
 # }}}
 # Sticky {{{
-sticky_windows = []
+sticky_windows: list[Window] = []
 
 
 @lazy.function
