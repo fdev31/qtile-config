@@ -641,6 +641,7 @@ floating_layout = layout.Floating(
         Match(title=re.compile("Android Emulator.*")),
         Match(wm_class="wineboot.exe", title=re.compile(".*Wine")),
         Match(wm_class="control.exe", title=re.compile(".*Wine")),
+        Match(wm_class="Caja", title="Opérations sur les fichiers"),
     ],
 )
 
