@@ -58,6 +58,14 @@ def moveToNextScreen(qtile):
     active_win and active_win.togroup(qtile.current_screen.group.name)
 
 
+@lazy.function
+def maximizeWindow(qtile):
+    """Toggle maximize state & fix Z-order"""
+    window = qtile.current_window
+    window.bring_to_front()
+    window.toggle_maximize()
+
+
 def moveToGroup(qtile, direction, skip_empty=False, move_window=False):
     """Move to sibling groups"""
     old_window = qtile.current_window
@@ -92,12 +100,7 @@ def raiseFloatingWindows(qtile):
 @lazy.function
 def goToUrgent(qtile):
     """Switch to the next urgent group"""
-    for group in qtile.groups_map.values():
-        if group == qtile.current_group:
-            continue
-        if [1 for w in group.windows if w.urgent]:
-            qtile.current_screen.set_group(group)
-            break
+    qtile.next_urgent()
 
 
 # }}}
@@ -130,7 +133,7 @@ keys = [  # {{{
     Key([mod], "s", lazy.window.toggle_floating()),
     Key([mod], "f", lazy.window.toggle_fullscreen()),
     Key([mod], "n", lazy.window.toggle_minimize()),
-    Key([mod, "shift"], "n", lazy.window.toggle_maximize()),
+    Key([mod, "shift"], "n", maximizeWindow),
     Key([mod], "t", lazy.spawn(APP_FILES), desc="spawn file manager"),
     Key([mod], "w", lazy.spawn(APP_WEB), desc="spawn web browser"),
     Key([mod], "b", lazy.hide_show_bar()),
