@@ -59,10 +59,10 @@ def moveToNextScreen(qtile):
 
 
 @lazy.function
-def maximizeWindow(qtile):
+def toggle_maximize(qtile):
     """Toggle maximize state & fix Z-order"""
     window = qtile.current_window
-    window.bring_to_front()
+    #    window.bring_to_front()
     window.toggle_maximize()
 
 
@@ -133,7 +133,7 @@ keys = [  # {{{
     Key([mod], "s", lazy.window.toggle_floating()),
     Key([mod], "f", lazy.window.toggle_fullscreen()),
     Key([mod], "n", lazy.window.toggle_minimize()),
-    Key([mod, "shift"], "n", maximizeWindow),
+    Key([mod, "shift"], "n", toggle_maximize),
     Key([mod], "t", lazy.spawn(APP_FILES), desc="spawn file manager"),
     Key([mod], "w", lazy.spawn(APP_WEB), desc="spawn web browser"),
     Key([mod], "b", lazy.hide_show_bar()),
@@ -583,11 +583,31 @@ bottom_bar = (
     ]
 )
 
+secondary_bottom_bar = [
+    widget.CurrentLayoutIcon(scale=0.7),
+    widget.GroupBox(
+        invert_mouse_wheel=True,
+        highlight_method="block",
+        center_aligned=False,
+        disable_drag=True,
+        inactive="#777777",
+        active="#EEEEFF",
+        padding=2,
+        spacing=0,
+    ),
+    widget.Prompt(),
+    widget.TaskList(),
+    widget.Sep(),
+]
+
 screens = [
     Screen(
         bottom=bar.Bar(
             bottom_bar, 24, opacity=0.75, margin=[0, MARGIN * 2, 0, MARGIN * 2]
         ),
+    ),
+    Screen(
+        bottom=bar.Bar(secondary_bottom_bar, 24, opacity=0.75, margin=[0, 64, 0, 64]),
     ),
 ]  # }}}
 # Drag floating layouts. {{{
@@ -608,7 +628,7 @@ dgroups_key_binder = None
 dgroups_app_rules = []  # type: List
 main = None  # WARNING: this is deprecated and will be removed soon
 follow_mouse_focus = True
-bring_front_click = False
+bring_front_click = True
 cursor_warp = False
 
 floating_layout = layout.Floating(
