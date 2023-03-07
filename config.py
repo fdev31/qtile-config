@@ -228,7 +228,7 @@ groups: list[Group] = []
 # ICONS: 什擄來洛 烙落 酪 駱藍燎亮咽 溜 琉 阮蓼切盧
 group_def = [
     Props(
-        icon="",
+        icon=" ",
         name="term",
         key="ampersand",
     ),
@@ -547,19 +547,20 @@ extra_hdd_path = (
     else ("/home/fab/grosdisk" if gethostname() == "popo" else "/home")
 )
 
+bars_style = dict(
+            invert_mouse_wheel=True,
+            highlight_method="block",
+            disable_drag=True,
+            rounded=True,
+            padding_x=5,
+            margin=0,
+            center_aligned=False
+)
+
 bottom_bar = (
     [
         widget.CurrentLayoutIcon(scale=0.7),
-        widget.GroupBox(
-            invert_mouse_wheel=True,
-            highlight_method="block",
-            center_aligned=False,
-            disable_drag=True,
-            inactive="#777777",
-            active="#EEEEFF",
-            padding=2,
-            spacing=0,
-        ),
+        widget.GroupBox(**bars_style),
         widget.Prompt(),
         widget.TaskList(),
         widget.Systray(),
@@ -585,16 +586,7 @@ bottom_bar = (
 
 secondary_bottom_bar = [
     widget.CurrentLayoutIcon(scale=0.7),
-    widget.GroupBox(
-        invert_mouse_wheel=True,
-        highlight_method="block",
-        center_aligned=False,
-        disable_drag=True,
-        inactive="#777777",
-        active="#EEEEFF",
-        padding=2,
-        spacing=0,
-    ),
+    widget.GroupBox(**bars_style),
     widget.Prompt(),
     widget.TaskList(),
 ]
