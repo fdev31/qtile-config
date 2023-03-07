@@ -597,7 +597,6 @@ secondary_bottom_bar = [
     ),
     widget.Prompt(),
     widget.TaskList(),
-    widget.Sep(),
 ]
 
 screens = [
