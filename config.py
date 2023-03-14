@@ -38,6 +38,7 @@ from libqtile.lazy import lazy
 from libqtile import layout, bar, widget, hook
 from libqtile import extension
 from libqtile.log_utils import logger
+
 # }}}
 
 MARGIN = 2
@@ -85,6 +86,7 @@ def moveToGroup(qtile, direction, skip_empty=False, move_window=False):
             continue
         break
     if cur_group != qtile.current_group:
+        qtile.core.set_desk_nr(qtile.groups.index(cur_group))
         qtile.current_screen.set_group(cur_group)
         if move_window:
             old_window.togroup(qtile.current_group.name)
@@ -230,7 +232,8 @@ groups: list[Group] = []
 # ICONS: 什擄來洛 烙落 酪 駱藍燎亮咽 溜 琉 阮蓼切盧
 group_def = [
     Props(
-        icon=" ",
+        # ,,
+        icon="",  #  ,  ,  ,  ,  ,  , 
         name="term",
         key="ampersand",
     ),
@@ -550,13 +553,13 @@ extra_hdd_path = (
 )
 
 bars_style = dict(
-            invert_mouse_wheel=True,
-            highlight_method="block",
-            disable_drag=True,
-            rounded=True,
-            padding_x=5,
-            margin=0,
-            center_aligned=False
+    invert_mouse_wheel=True,
+    highlight_method="block",
+    disable_drag=True,
+    rounded=True,
+    padding_x=5,
+    margin=0,
+    center_aligned=False,
 )
 
 bottom_bar = (
@@ -628,7 +631,7 @@ floating_layout = layout.Floating(
     border_width=0,
     float_rules=[
         # Run the utility of `xprop` to see the wm class and name of an X client.
-        Match(wm_class='xfdesktop'),
+        Match(wm_class=APP_FILES),
         Match(wm_type="utility"),
         Match(wm_class="Pinentry-gtk-2"),
         Match(wm_type="notification"),
@@ -659,7 +662,7 @@ floating_layout = layout.Floating(
         Match(title=re.compile("Android Emulator.*")),
         Match(wm_class="wineboot.exe", title=re.compile(".*Wine")),
         Match(wm_class="control.exe", title=re.compile(".*Wine")),
-        Match(wm_class="Caja", title="Opérations sur les fichiers"),
+        Match(wm_class=APP_FILES, title="Opérations sur les fichiers"),
         Match(
             title="Votre écran est partagé par le biais de l'application discord.com."
         ),
@@ -699,7 +702,7 @@ wmname = "LG3D"
 # Hooks {{{
 # if no override found, will be fully opaque
 opacity_exceptions = set(
-    ["Blender", "Brave-browser", "Code", "Popcorn-Time", "ferdium"]
+    ["Blender", "Brave-browser", "Code", "Popcorn-Time", "ferdium", "Steam"]
 )
 opacity_overrides = {"Code": 0.95, "ferdium": 0.8}
 
