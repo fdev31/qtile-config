@@ -298,7 +298,7 @@ group_def = [
         name="logs",
         layout="columns",
         key="agrave",
-        wm_classes=["TermLog"],
+        wm_classes=["TermLog", "xfdesktop"],
     ),
 ]
 # }}}
