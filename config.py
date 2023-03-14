@@ -60,8 +60,8 @@ def setVolume(qtile, val=None):
     else:
         v = abs(val)
         c = "+" if val > 0 else "-"
-        #         qtile.spawn("amixer sset Master %d%%%s" % (v, c))
-        qtile.spawn('notify-send -t 1 "volume%s"' % c)
+        qtile.spawn("amixer sset Master %d%%%s" % (v, c))
+#         qtile.spawn('notify-send -t 1 "volume%s"' % c)
 
 
 @lazy.function
