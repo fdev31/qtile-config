@@ -575,8 +575,6 @@ bottom_bar = (
         widget.GroupBox(**bars_style),
         widget.Prompt(),
         widget.TaskList(),
-        widget.TextBox(text=""),
-        widget.Volume(),
         widget.Systray(),
         widget.Sep(),
     ]
