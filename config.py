@@ -51,6 +51,19 @@ WORK_MODE = os.path.exists(os.path.expanduser("~/liberty"))
 
 mod = "mod4"
 # Action functions {{{
+
+
+def setVolume(qtile, val=None):
+    if val is None:
+        qtile.spawn("amixer sset Master toggle"),
+        qtile.spawn('notify-send -t 1 "volume toggle"')
+    else:
+        v = abs(val)
+        c = "+" if val > 0 else "-"
+        qtile.spawn("amixer sset Master %d%%%s" % (v, c))
+        qtile.spawn('notify-send -t 1 "volume%s"' % c)
+
+
 @lazy.function
 def moveToNextScreen(qtile):
     """Move active win to next screen"""
@@ -215,17 +228,17 @@ keys = [  # {{{
     Key([mod], "c", lazy.window.kill(), desc="Close window"),
     Key([mod, "control"], "r", lazy.restart()),
     # Media controls
-    Key([], "XF86AudioMute", lazy.spawn("amixer sset Master toggle"), desc="(un)Mute"),
+    Key([], "XF86AudioMute", lazy.function(setVolume), desc="(un)Mute"),
     Key(
         [],
         "XF86AudioLowerVolume",
-        lazy.spawn("amixer sset Master 5%-"),
+        lazy.function(setVolume, -5),
         desc="lower volume",
     ),
     Key(
         [],
         "XF86AudioRaiseVolume",
-        lazy.spawn("amixer sset Master 5%+"),
+        lazy.function(setVolume, 5),
         desc="raise volume",
     ),
     Key([], "XF86AudioPlay", lazy.spawn("playerctl play-pause"), desc="toggle pause"),
