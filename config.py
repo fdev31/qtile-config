@@ -60,7 +60,7 @@ def setVolume(qtile, val=None):
     else:
         v = abs(val)
         c = "+" if val > 0 else "-"
-        qtile.spawn("amixer sset Master %d%%%s" % (v, c))
+        #         qtile.spawn("amixer sset Master %d%%%s" % (v, c))
         qtile.spawn('notify-send -t 1 "volume%s"' % c)
 
 
@@ -599,6 +599,7 @@ bottom_bar = (
         widget.GroupBox(**bars_style),
         widget.Prompt(),
         widget.TaskList(),
+        widget.Volume(),
         widget.Systray(),
         widget.Sep(),
     ]
@@ -758,6 +759,10 @@ def set_floating(window):
         or window.window.get_wm_type() in floating_types
     ):
         window.floating = True
+
+
+#     if window.floating:
+#         window.move_to_top()
 
 
 # }}}
