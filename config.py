@@ -36,10 +36,12 @@ from libqtile.config import Key, Screen, Group, Drag, Click
 from libqtile.config import ScratchPad, DropDown, Match
 from libqtile.lazy import lazy
 from libqtile import layout, bar, widget, hook
-from libqtile import extension  # }}}
+from libqtile import extension
+from libqtile.log_utils import logger
+# }}}
 
 MARGIN = 2
-APP_FILES = "caja"
+APP_FILES = "thunar"
 APP_WEB = "brave"
 APP_TERM = "kitty"
 # set to False to run ./gen-keybinding-img, current keys are for French azerty
@@ -126,7 +128,7 @@ keys = [  # {{{
     Key(
         [mod, "control"],
         "l",
-        lazy.spawn("mate-session-save --shutdown-dialog"),
+        lazy.spawn("xfce4-session-logout"),
         desc="Shutdown popup",
     ),
     Key([mod], "u", goToUrgent, desc="Switch to urgent"),
@@ -626,6 +628,7 @@ floating_layout = layout.Floating(
     border_width=0,
     float_rules=[
         # Run the utility of `xprop` to see the wm class and name of an X client.
+        Match(wm_class='xfdesktop'),
         Match(wm_type="utility"),
         Match(wm_class="Pinentry-gtk-2"),
         Match(wm_type="notification"),
@@ -649,6 +652,7 @@ floating_layout = layout.Floating(
         Match(wm_class="gyroflow.py"),
         Match(title="Steam"),
         Match(wm_class="Steam"),
+        Match(wm_class=APP_FILES.title()),
         Match(title="branchdialog"),  # gitk
         Match(title="pinentry"),  # GPG key password entry
         Match(title=re.compile("SafeEyes*")),
