@@ -601,20 +601,18 @@ bottom_bar = (
         widget.GroupBox(**bars_style),
         widget.Prompt(),
         widget.TaskList(),
+        widget.TextBox(text=""),
         widget.Volume(),
         widget.Systray(),
         widget.Sep(),
     ]
     + backlight_control
     + [
-        widget.TextBox(text=" ", padding=1),
-        widget.CPUGraph(samples=graph_width * 2, **gen_widgets_opts),
-        widget.TextBox(text=" ", padding=1),
+        widget.TextBox(text="🐏", padding=1),
         widget.MemoryGraph(samples=graph_width * 2, **gen_widgets_opts),
         widget.TextBox(text=" ", padding=1),
         widget.NetGraph(samples=graph_width * 6, **gen_widgets_opts),
-        widget.Sep(),
-        widget.TextBox(text=" ", padding=1),
+        widget.TextBox(text="", padding=1),
         widget.HDDGraph(path="/", **hdd_widgets_opts),
         widget.TextBox(text=extra_hdd_icon, padding=1),
         widget.HDDGraph(path=extra_hdd_path, **hdd_widgets_opts),
