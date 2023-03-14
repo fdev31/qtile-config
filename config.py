@@ -126,7 +126,7 @@ keys = [  # {{{
         desc="Custom menu",
     ),
     Key([mod], "d", lazy.spawn("doNotDisturb"), desc="toggle notifications"),
-    Key([mod], "l", lazy.spawn("mate-screensaver-command -l"), desc="lock screen"),
+    Key([mod], "l", lazy.spawn("xfce4-screensaver-command -l"), desc="lock screen"),
     Key(
         [mod, "control"],
         "l",
@@ -214,6 +214,24 @@ keys = [  # {{{
     Key([mod], "space", lazy.next_layout()),
     Key([mod], "c", lazy.window.kill(), desc="Close window"),
     Key([mod, "control"], "r", lazy.restart()),
+    # Media controls
+    Key([], "XF86AudioMute", lazy.spawn("amixer sset Master toggle"), desc="(un)Mute"),
+    Key(
+        [],
+        "XF86AudioLowerVolume",
+        lazy.spawn("amixer sset Master 5%-"),
+        desc="lower volume",
+    ),
+    Key(
+        [],
+        "XF86AudioRaiseVolume",
+        lazy.spawn("amixer sset Master 5%+"),
+        desc="raise volume",
+    ),
+    Key([], "XF86AudioPlay", lazy.spawn("playerctl play-pause"), desc="toggle pause"),
+    Key([], "XF86AudioStop", lazy.spawn("playerctl stop"), desc="stop playback"),
+    Key([], "XF86AudioPrev", lazy.spawn("playerctl previous"), desc="previous track"),
+    Key([], "XF86AudioNext", lazy.spawn("playerctl next"), desc="next track"),
 ]  # }}}
 # Groups definition {{{
 class Props(dict):
