@@ -748,17 +748,25 @@ def set_floating(window):
     #    log.write('\n')
     #    log.flush()
     # }}}
+    is_background = False
     for cls in window.get_wm_class():
+        if cls == "xfdesktop":
+            is_background = True
         if cls in opacity_exceptions:
             window.opacity = opacity_overrides.get(cls, 1.0)
             break
     else:
         window.opacity = 0.95
-    if (
-        window.window.get_wm_transient_for()
-        or window.window.get_wm_type() in floating_types
-    ):
+    if is_background:
         window.floating = True
+        window.keep_below()
+        window.minimized = True
+    else:
+        if (
+            window.window.get_wm_transient_for()
+            or window.window.get_wm_type() in floating_types
+        ):
+            window.floating = True
 
 
 #     if window.floating:
