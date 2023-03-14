@@ -61,6 +61,8 @@ def setVolume(qtile, val=None):
         v = abs(val)
         c = "+" if val > 0 else "-"
         qtile.spawn("amixer sset Master %d%%%s" % (v, c))
+
+
 #         qtile.spawn('notify-send -t 1 "volume%s"' % c)
 
 
@@ -655,7 +657,7 @@ mouse = [
 dgroups_key_binder = None
 dgroups_app_rules = []  # type: List
 main = None  # WARNING: this is deprecated and will be removed soon
-follow_mouse_focus = True
+# follow_mouse_focus = True
 bring_front_click = True
 cursor_warp = False
 
