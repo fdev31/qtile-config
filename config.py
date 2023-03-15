@@ -216,6 +216,8 @@ keys = [  # {{{
     Key([mod], "space", lazy.next_layout()),
     Key([mod], "c", lazy.window.kill(), desc="Close window"),
     Key([mod, "control"], "r", lazy.restart()),
+    # Audio controls (output volume managed by volumeicon)
+    Key([], "XF86AudioMicMute", lazy.spawn("toggleCapture"), desc="toggle microphone"),
     # Media controls
     Key([], "XF86AudioPlay", lazy.spawn("playerctl play-pause"), desc="toggle pause"),
     Key([], "XF86AudioStop", lazy.spawn("playerctl stop"), desc="stop playback"),
