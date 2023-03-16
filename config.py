@@ -1,4 +1,9 @@
 # vim: fdm=marker
+PRIMARY_COLOR="#88A8FF"
+SECONDARY_COLOR="#FFB161"
+DARK_COLOR="#823232"
+DARK_NEUTRAL="#323232"
+MID_NEUTRAL=PRIMARY_COLOR #"#DFDFDF"
 # {{{
 # Copyright (c) 2010 Aldo Cortesi
 # Copyright (c) 2010, 2014 dequis
@@ -479,21 +484,22 @@ if WORK_MODE:
     )
 # }}}
 # Screens : layouts & widgets {{{
-# "#FF77FF"
 layouts = [
     layout.Max(),
     layout.Bsp(
-        border_focus="#88a8FF",
+        border_focus=PRIMARY_COLOR,
         border_width=2,
-        border_normal="#323232",
+        border_normal=DARK_NEUTRAL,
         border_on_single=False,
         margin=MARGIN,
     ),
     layout.Columns(
         fair=True,
-        border_focus="#88a8FF",
+        border_focus=PRIMARY_COLOR,
+        border_focus_stack=SECONDARY_COLOR,
+        border_normal=DARK_NEUTRAL,
+        border_normal_stack=DARK_COLOR,
         border_width=2,
-        border_normal="#323232",
         margin=MARGIN,
     ),
 ]
@@ -543,11 +549,12 @@ gen_widgets_opts = dict(
     width=graph_width,
     type="line",
     line_width=2,
-    graph_color="#DFDFDF",
+    graph_color=MID_NEUTRAL,
 )
 hdd_widgets_opts = dict(
     width=int(graph_width / 2),
     border_width=0,
+    graph_color=PRIMARY_COLOR,
     space_type="free",
     frequency=60,
     line_width=1,
