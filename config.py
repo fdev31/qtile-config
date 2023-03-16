@@ -1,9 +1,9 @@
 # vim: fdm=marker
-PRIMARY_COLOR="#88A8FF"
-SECONDARY_COLOR="#FFB161"
-DARK_COLOR="#823232"
-DARK_NEUTRAL="#323232"
-MID_NEUTRAL=PRIMARY_COLOR #"#DFDFDF"
+PRIMARY_COLOR = "#88A8FF"
+SECONDARY_COLOR = "#FFB161"
+DARK_COLOR = "#823232"
+DARK_NEUTRAL = "#323232"
+MID_NEUTRAL = PRIMARY_COLOR  # "#DFDFDF"
 # {{{
 # Copyright (c) 2010 Aldo Cortesi
 # Copyright (c) 2010, 2014 dequis
@@ -444,6 +444,7 @@ def toggleDropDown(qtile, groupname, dropdowns):
                 pass
         else:
             try:
+                dd[name].window.togroup()
                 dd[name].show()
                 # dd[name].window.bring_to_front()
             except KeyError:
