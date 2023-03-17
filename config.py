@@ -445,7 +445,6 @@ def toggleDropDown(qtile, groupname, dropdowns):
                 pass
         else:
             try:
-                dd[name].window.togroup()
                 dd[name].show()
                 # dd[name].window.bring_to_front()
             except KeyError:
