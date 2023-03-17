@@ -1,9 +1,10 @@
 # vim: fdm=marker
-PRIMARY_COLOR = "#88A8FF"
-SECONDARY_COLOR = "#FFB161"
+SECONDARY_COLOR = "#88A8FF"
+PRIMARY_COLOR = "#FFB161"
 DARK_COLOR = "#823232"
 DARK_NEUTRAL = "#323232"
 MID_NEUTRAL = PRIMARY_COLOR  # "#DFDFDF"
+DEFAULT_OPACITY = 0.95
 # {{{
 # Copyright (c) 2010 Aldo Cortesi
 # Copyright (c) 2010, 2014 dequis
@@ -45,7 +46,6 @@ from libqtile import extension
 from libqtile.log_utils import logger
 
 # }}}
-
 MARGIN = 2
 APP_FILES = "thunar"
 APP_WEB = "brave"
@@ -53,7 +53,6 @@ APP_TERM = "kitty"
 # set to False to run ./gen-keybinding-img, current keys are for French azerty
 USE_CUSTOM_KEYS = not os.environ.get("NO_CUSTOM_KEYS")
 WORK_MODE = os.path.exists(os.path.expanduser("~/liberty"))
-
 mod = "mod4"
 # Action functions {{{
 
@@ -65,7 +64,8 @@ def moveToNextScreen(qtile):
     qtile.focus_screen(
         (qtile.screens.index(qtile.current_screen) + 1) % len(qtile.screens)
     )
-    active_win and active_win.togroup(qtile.current_screen.group.name)
+    if active_win:
+        active_win.togroup(qtile.current_screen.group.name)
 
 
 @lazy.function
@@ -571,6 +571,16 @@ extra_hdd_path = (
 
 bars_style = dict(
     invert_mouse_wheel=True,
+    this_current_screen_border=PRIMARY_COLOR,
+    other_current_screen_border=PRIMARY_COLOR,
+    block_highlight_text_color="#000",
+    inactive=SECONDARY_COLOR,
+    active=PRIMARY_COLOR,
+    other_screen_border=SECONDARY_COLOR,
+    highlight_color=DARK_COLOR,
+    #     border_color=PRIMARY_COLOR,
+    background=DARK_NEUTRAL,
+    foreground=PRIMARY_COLOR,
     highlight_method="block",
     disable_drag=True,
     rounded=True,
@@ -578,13 +588,19 @@ bars_style = dict(
     margin=0,
     center_aligned=False,
 )
+tasklist_opts = dict(
+    theme_mode="fallback",
+    background=DARK_NEUTRAL,
+    border=PRIMARY_COLOR,
+    markup_focused="<b>{}</b>",
+)
 
 bottom_bar = (
     [
         widget.CurrentLayoutIcon(scale=0.7),
         widget.GroupBox(**bars_style),
         widget.Prompt(),
-        widget.TaskList(),
+        widget.TaskList(**tasklist_opts),
         widget.Systray(),
         widget.Sep(),
     ]
@@ -607,7 +623,7 @@ secondary_bottom_bar = [
     widget.CurrentLayoutIcon(scale=0.7),
     widget.GroupBox(**bars_style),
     widget.Prompt(),
-    widget.TaskList(),
+    widget.TaskList(**tasklist_opts),
 ]
 
 screens = [
@@ -633,14 +649,7 @@ mouse = [
     ),
     Click([mod], "Button2", lazy.window.bring_to_front()),
 ]  # }}}
-# Misc / floating {{{
-dgroups_key_binder = None
-dgroups_app_rules = []  # type: List
-main = None  # WARNING: this is deprecated and will be removed soon
-# follow_mouse_focus = True
-bring_front_click = True
-cursor_warp = False
-
+# Floating layout {{{
 floating_layout = layout.Floating(
     border_width=0,
     float_rules=[
@@ -696,15 +705,16 @@ floating_types = set(
         "tooltip" "dock",
     ]
 )
+# }}}
+# Misc {{{
+dgroups_key_binder = None
+dgroups_app_rules = []  # type: List
+# follow_mouse_focus = True
+bring_front_click = True
+cursor_warp = False
 
 auto_fullscreen = True
-
-"""
-auto_fullscreen_exceptions = (
-    Match(wm_class="firefox"),
-    Match(wm_class="google-chrome"),
-)
-"""
+# auto_fullscreen_exceptions : tuple[Match] = ()
 
 # focus_on_window_activation = "urgent"
 focus_on_window_activation = "smart"
@@ -712,24 +722,21 @@ floats_kept_above = True
 
 # XXX JAVA COMPAT:
 wmname = "LG3D"
-# }}}
-# Hooks {{{
+
+# overrides if you don't want exceptions to be fully opaque
 # if no override found, will be fully opaque
 opacity_exceptions = set(
-    ["Blender", "Brave-browser", "Code", "Popcorn-Time", "ferdium", "Steam"]
+    ["Blender", "Brave-browser", "Popcorn-Time", "ferdium", "Steam"]
 )
-opacity_overrides = {"Code": 0.95, "ferdium": 0.8}
-
-
+opacity_overrides = {"ferdium": 0.8}
+# }}}
+sticky_windows: list[Match] = [
+    Match(wm_class="xfce4-notifyd"),
+]
+# Hooks {{{
 @hook.subscribe.client_new
-def set_floating(window):
-    # Debug log {{{
-    #    log = open('/tmp/x.log','a+')
-    #    log.write( str(window.get_wm_class()))
-    #    log.write( repr(window.window.get_wm_type()))
-    #    log.write('\n')
-    #    log.flush()
-    # }}}
+def new_client_hook(window):
+    # detect background & search for opacity overrides {{{
     is_background = False
     for cls in window.get_wm_class():
         if cls == "xfdesktop":
@@ -738,7 +745,8 @@ def set_floating(window):
             window.opacity = opacity_overrides.get(cls, 1.0)
             break
     else:
-        window.opacity = 0.95
+        window.opacity = DEFAULT_OPACITY
+
     if is_background:
         window.floating = True
         window.keep_below()
@@ -749,39 +757,42 @@ def set_floating(window):
             or window.window.get_wm_type() in floating_types
         ):
             window.floating = True
+    # }}}
+    # auto sticky windows {{{
+    for w in sticky_windows:
+        if w.compare(window):
+            _sticky_windows.add(window)
+    # }}}
 
 
-#     if window.floating:
-#         window.move_to_top()
-
-
-# }}}
-# Sticky {{{
-sticky_windows: list[Window] = []
-
-
-@lazy.function
-def toggle_sticky_windows(qtile, window=None):
-    if window is None:
-        window = qtile.current_screen.group.current_window
-    if window in sticky_windows:
-        sticky_windows.remove(window)
-    else:
-        sticky_windows.append(window)
-    return window
+# Sticky hooks {{{
+_sticky_windows: set[Window] = set()
 
 
 @hook.subscribe.setgroup
 def move_sticky_windows():
-    for window in sticky_windows:
+    for window in _sticky_windows:
         window.togroup()
     return
 
 
 @hook.subscribe.client_killed
 def remove_sticky_windows(window):
-    if window in sticky_windows:
-        sticky_windows.remove(window)
+    if window in _sticky_windows:
+        _sticky_windows.remove(window)
+
+
+# }}}
+# {{{ sticky keybind
+@lazy.function
+def toggle_sticky_windows(qtile, window=None):  # {{{
+    if window is None:
+        window = qtile.current_screen.group.current_window
+    if window in _sticky_windows:
+        _sticky_windows.remove(window)
+    else:
+        _sticky_windows.add(window)
+    return window  # }}}
 
 
 keys.append(
@@ -792,4 +803,5 @@ keys.append(
         desc="toggle window's sticky state",
     )
 )
+# }}}
 # }}}
