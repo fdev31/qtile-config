@@ -591,8 +591,12 @@ bars_style = dict(
 tasklist_opts = dict(
     theme_mode="fallback",
     background=DARK_NEUTRAL,
-    border=PRIMARY_COLOR,
+    border=None,
     icon_size=20,
+    max_title_width=None,
+    markup_minimized="<s>{}</s>",
+    markup_floating="<i>{}</i>",
+    title_width_method="uniform",
     markup_focused="<b>{}</b>",
 )
 
