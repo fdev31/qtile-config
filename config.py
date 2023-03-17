@@ -93,7 +93,8 @@ def moveToGroup(qtile, direction, skip_empty=False, move_window=False):
             continue
         break
     if cur_group != qtile.current_group:
-        qtile.core.set_desk_nr(qtile.groups.index(cur_group))
+        if hasattr(qtile.core, "set_desk_nr"):
+            qtile.core.set_desk_nr(qtile.groups.index(cur_group))
         qtile.current_screen.set_group(cur_group)
         if move_window:
             old_window.togroup(qtile.current_group.name)
