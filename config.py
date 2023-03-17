@@ -592,6 +592,7 @@ tasklist_opts = dict(
     theme_mode="fallback",
     background=DARK_NEUTRAL,
     border=PRIMARY_COLOR,
+    icon_size=20,
     markup_focused="<b>{}</b>",
 )
 
