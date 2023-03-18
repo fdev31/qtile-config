@@ -46,7 +46,7 @@ from libqtile import extension
 from libqtile.log_utils import logger
 
 # }}}
-MARGIN = 2
+MARGIN = 4
 APP_FILES = "thunar"
 APP_WEB = "brave"
 APP_TERM = "kitty"
@@ -585,7 +585,7 @@ bars_style = dict(
     disable_drag=True,
     rounded=True,
     padding_x=5,
-    margin=0,
+    margin=MARGIN,
     center_aligned=False,
 )
 tasklist_opts = dict(
@@ -634,11 +634,16 @@ secondary_bottom_bar = [
 screens = [
     Screen(
         bottom=bar.Bar(
-            bottom_bar, 24, opacity=0.75, margin=[0, MARGIN * 2, 0, MARGIN * 2]
+            bottom_bar,
+            24,
+            opacity=0.75,
+            margin=[int(MARGIN / 2), MARGIN * 2, 0, MARGIN * 2],
         ),
     ),
     Screen(
-        bottom=bar.Bar(secondary_bottom_bar, 24, opacity=0.75, margin=[0, 64, 0, 64]),
+        bottom=bar.Bar(
+            secondary_bottom_bar, 24, opacity=0.75, margin=[int(MARGIN / 2), 64, 0, 64]
+        ),
     ),
 ]  # }}}
 # Drag floating layouts. {{{
