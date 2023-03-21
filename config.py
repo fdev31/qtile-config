@@ -584,9 +584,9 @@ bars_style = dict(
     highlight_method="block",
     disable_drag=True,
     rounded=True,
-    padding_x=5,
-    margin=MARGIN,
-    center_aligned=False,
+     padding_x=5,
+#     margin=MARGIN,
+    center_aligned=True,
 )
 tasklist_opts = dict(
     theme_mode="fallback",
