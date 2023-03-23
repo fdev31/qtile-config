@@ -134,7 +134,7 @@ keys = [  # {{{
         desc="Custom menu",
     ),
     Key([mod], "d", lazy.spawn("doNotDisturb"), desc="toggle notifications"),
-    Key([mod], "l", lazy.spawn("xfce4-screensaver-command -l"), desc="lock screen"),
+    Key([mod], "l", lazy.spawn("light-locker-command -l"), desc="lock screen"),
     Key(
         [mod, "control"],
         "l",
