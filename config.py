@@ -3,7 +3,7 @@ SECONDARY_COLOR = "#88A8FF"
 PRIMARY_COLOR = "#FFB161"
 DARK_COLOR = "#823232"
 DARK_NEUTRAL = "#323232"
-MID_NEUTRAL = PRIMARY_COLOR  # "#DFDFDF"
+LIGHT_NEUTRAL = "#CFCFCF"
 DEFAULT_OPACITY = 0.95
 # {{{
 # Copyright (c) 2010 Aldo Cortesi
@@ -534,35 +534,37 @@ backlight_control = (
     [
         widget.Backlight(
             backlight_name=BL_DEVICE_NAME.rsplit("/", 1)[1],
+            background=DARK_NEUTRAL,
             format="  {percent:2.0%}",
             change_command="brightnessctl s {0}%",
             step=2,
         ),
-        widget.Sep(),
     ]
     if BL_DEVICE_NAME
     else []
 )
 
 gen_widgets_opts = dict(
-    border_width=1,
+    border_width=0,
     padding=0,
     width=graph_width,
     type="line",
+    background=DARK_NEUTRAL,
     line_width=2,
-    graph_color=MID_NEUTRAL,
+    graph_color=LIGHT_NEUTRAL,
 )
 hdd_widgets_opts = dict(
     width=int(graph_width / 2),
     border_width=0,
-    graph_color=PRIMARY_COLOR,
+    graph_color=LIGHT_NEUTRAL,
     space_type="free",
     frequency=60,
     line_width=1,
     type="box",
+    background=DARK_NEUTRAL,
 )
 
-extra_hdd_icon = " " if (WORK_MODE or gethostname() == "popo") else "🏠 "
+extra_hdd_icon = "🥙 " if (WORK_MODE or gethostname() == "popo") else "🏠 "
 extra_hdd_path = (
     "/stuff"
     if WORK_MODE
@@ -574,7 +576,7 @@ bars_style = dict(
     this_current_screen_border=PRIMARY_COLOR,
     other_current_screen_border=PRIMARY_COLOR,
     block_highlight_text_color="#000",
-    inactive=SECONDARY_COLOR,
+    inactive=LIGHT_NEUTRAL,
     active=PRIMARY_COLOR,
     other_screen_border=SECONDARY_COLOR,
     highlight_color=DARK_COLOR,
@@ -591,8 +593,11 @@ bars_style = dict(
 tasklist_opts = dict(
     theme_mode="fallback",
     background=DARK_NEUTRAL,
-    border=None,
+    center_aligned=True,
+#     border=None,
     icon_size=20,
+    padding_y=0,
+    highlight_method='block',
     max_title_width=None,
     markup_minimized="<s>{}</s>",
     markup_floating="<i>{}</i>",
@@ -602,25 +607,23 @@ tasklist_opts = dict(
 
 bottom_bar = (
     [
-        widget.CurrentLayoutIcon(scale=0.7),
+        widget.CurrentLayoutIcon(scale=0.7, background=SECONDARY_COLOR, foreground='#000'),
         widget.GroupBox(**bars_style),
         widget.Prompt(),
         widget.TaskList(**tasklist_opts),
-        widget.Systray(),
-        widget.Sep(),
+        widget.Systray(background=DARK_NEUTRAL),
     ]
     + backlight_control
     + [
-        widget.TextBox(text="🐏", padding=1),
+        widget.TextBox(text="🐏", padding=1, background=DARK_NEUTRAL),
         widget.MemoryGraph(samples=graph_width * 2, **gen_widgets_opts),
-        widget.TextBox(text=" ", padding=1),
-        widget.NetGraph(samples=graph_width * 6, **gen_widgets_opts),
-        widget.TextBox(text="", padding=1),
+#         widget.TextBox(text=" ", padding=1),
+#         widget.NetGraph(samples=graph_width * 6, **gen_widgets_opts),
+        widget.TextBox(text=" ", padding=1, background=DARK_NEUTRAL),
         widget.HDDGraph(path="/", **hdd_widgets_opts),
-        widget.TextBox(text=extra_hdd_icon, padding=1),
+        widget.TextBox(text=extra_hdd_icon, padding=1, background=DARK_NEUTRAL),
         widget.HDDGraph(path=extra_hdd_path, **hdd_widgets_opts),
-        widget.Sep(),
-        widget.Clock(format="%a %d/%m %H:%M"),
+        widget.Clock(format="%a %d/%m %H:%M", background=SECONDARY_COLOR, foreground='#000'),
     ]
 )
 
@@ -637,12 +640,12 @@ screens = [
             bottom_bar,
             24,
             opacity=0.75,
-            margin=[int(MARGIN / 2), MARGIN * 2, 0, MARGIN * 2],
+            margin=[int(MARGIN / 2), MARGIN * 2, int(MARGIN / 2), MARGIN * 2],
         ),
     ),
     Screen(
         bottom=bar.Bar(
-            secondary_bottom_bar, 24, opacity=0.75, margin=[int(MARGIN / 2), 64, 0, 64]
+            secondary_bottom_bar, 24, opacity=0.75, margin=[int(MARGIN / 2), 64, int(MARGIN / 2), 64]
         ),
     ),
 ]  # }}}
