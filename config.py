@@ -586,18 +586,18 @@ bars_style = dict(
     highlight_method="block",
     disable_drag=True,
     rounded=True,
-     padding_x=5,
-#     margin=MARGIN,
+    padding_x=5,
+    #     margin=MARGIN,
     center_aligned=True,
 )
 tasklist_opts = dict(
     theme_mode="fallback",
     background=DARK_NEUTRAL,
     center_aligned=True,
-#     border=None,
+    #     border=None,
     icon_size=20,
     padding_y=0,
-    highlight_method='block',
+    highlight_method="block",
     max_title_width=None,
     markup_minimized="<s>{}</s>",
     markup_floating="<i>{}</i>",
@@ -607,7 +607,9 @@ tasklist_opts = dict(
 
 bottom_bar = (
     [
-        widget.CurrentLayoutIcon(scale=0.7, background=SECONDARY_COLOR, foreground='#000'),
+        widget.CurrentLayoutIcon(
+            scale=0.7, background=SECONDARY_COLOR, foreground="#000"
+        ),
         widget.GroupBox(**bars_style),
         widget.Prompt(),
         widget.TaskList(**tasklist_opts),
@@ -617,13 +619,15 @@ bottom_bar = (
     + [
         widget.TextBox(text="🐏", padding=1, background=DARK_NEUTRAL),
         widget.MemoryGraph(samples=graph_width * 2, **gen_widgets_opts),
-#         widget.TextBox(text=" ", padding=1),
-#         widget.NetGraph(samples=graph_width * 6, **gen_widgets_opts),
+        #         widget.TextBox(text=" ", padding=1),
+        #         widget.NetGraph(samples=graph_width * 6, **gen_widgets_opts),
         widget.TextBox(text=" ", padding=1, background=DARK_NEUTRAL),
         widget.HDDGraph(path="/", **hdd_widgets_opts),
         widget.TextBox(text=extra_hdd_icon, padding=1, background=DARK_NEUTRAL),
         widget.HDDGraph(path=extra_hdd_path, **hdd_widgets_opts),
-        widget.Clock(format="%a %d/%m %H:%M", background=SECONDARY_COLOR, foreground='#000'),
+        widget.Clock(
+            format="%a %d/%m %H:%M", background=SECONDARY_COLOR, foreground="#000"
+        ),
     ]
 )
 
@@ -645,7 +649,10 @@ screens = [
     ),
     Screen(
         bottom=bar.Bar(
-            secondary_bottom_bar, 24, opacity=0.75, margin=[int(MARGIN / 2), 64, int(MARGIN / 2), 64]
+            secondary_bottom_bar,
+            24,
+            opacity=0.75,
+            margin=[int(MARGIN / 2), 64, int(MARGIN / 2), 64],
         ),
     ),
 ]  # }}}
@@ -751,14 +758,14 @@ sticky_windows: list[Match] = [
 def new_client_hook(window):
     # detect background & search for opacity overrides {{{
     is_background = False
+    opacity = DEFAULT_OPACITY
     for cls in window.get_wm_class():
-        if cls == "xfdesktop":
+        if cls == "Xfdesktop":
             is_background = True
         if cls in opacity_exceptions:
-            window.opacity = opacity_overrides.get(cls, 1.0)
-            break
-    else:
-        window.opacity = DEFAULT_OPACITY
+            opacity = opacity_overrides.get(cls, 1.0)
+
+    window.opacity = opacity
 
     if is_background:
         window.floating = True
