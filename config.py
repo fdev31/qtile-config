@@ -632,7 +632,7 @@ bottom_bar = (
 )
 
 secondary_bottom_bar = [
-    widget.CurrentLayoutIcon(scale=0.7),
+    widget.CurrentLayoutIcon(scale=0.7, background=SECONDARY_COLOR, foreground="#000"),
     widget.GroupBox(**bars_style),
     widget.Prompt(),
     widget.TaskList(**tasklist_opts),
