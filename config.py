@@ -230,6 +230,8 @@ keys = [  # {{{
     Key([], "XF86AudioPrev", lazy.spawn("playerctl previous"), desc="previous track"),
     Key([], "XF86AudioNext", lazy.spawn("playerctl next"), desc="next track"),
 ]  # }}}
+
+
 # Groups definition {{{
 class Props(dict):
     icon: str
@@ -605,14 +607,16 @@ tasklist_opts = dict(
     markup_focused="<b>{}</b>",
 )
 
+basic_bar = [
+    widget.CurrentLayoutIcon(scale=0.7, background=SECONDARY_COLOR, foreground="#000"),
+    widget.GroupBox(**bars_style),
+    widget.Prompt(),
+    widget.TaskList(**tasklist_opts),
+]
+
 bottom_bar = (
-    [
-        widget.CurrentLayoutIcon(
-            scale=0.7, background=SECONDARY_COLOR, foreground="#000"
-        ),
-        widget.GroupBox(**bars_style),
-        widget.Prompt(),
-        widget.TaskList(**tasklist_opts),
+    basic_bar
+    + [
         widget.Systray(background=DARK_NEUTRAL),
     ]
     + backlight_control
@@ -631,12 +635,6 @@ bottom_bar = (
     ]
 )
 
-secondary_bottom_bar = [
-    widget.CurrentLayoutIcon(scale=0.7, background=SECONDARY_COLOR, foreground="#000"),
-    widget.GroupBox(**bars_style),
-    widget.Prompt(),
-    widget.TaskList(**tasklist_opts),
-]
 
 screens = [
     Screen(
@@ -649,7 +647,7 @@ screens = [
     ),
     Screen(
         bottom=bar.Bar(
-            secondary_bottom_bar,
+            basic_bar,
             24,
             opacity=0.75,
             margin=[int(MARGIN / 2), 64, int(MARGIN / 2), 64],
@@ -753,6 +751,8 @@ opacity_overrides = {"ferdium": 0.8}
 sticky_windows: list[Match] = [
     Match(wm_class="xfce4-notifyd"),
 ]
+
+
 # Hooks {{{
 @hook.subscribe.client_new
 def new_client_hook(window):
