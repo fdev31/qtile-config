@@ -230,10 +230,10 @@ keys = [  # {{{
     Key([], "XF86AudioPrev", lazy.spawn("playerctl previous"), desc="previous track"),
     Key([], "XF86AudioNext", lazy.spawn("playerctl next"), desc="next track"),
 ]  # }}}
+groups: list[Group] = []  # Groups definition {{{
 
 
-# Groups definition {{{
-class Props(dict):
+class Props(dict):  # custom props syntax {{{
     icon: str
     name: str
     key: str
@@ -245,7 +245,8 @@ class Props(dict):
             return
 
 
-groups: list[Group] = []
+# }}}
+
 # ICONS: 什擄來洛 烙落 酪 駱藍燎亮咽 溜 琉 阮蓼切盧
 group_def = [
     Props(
@@ -486,36 +487,33 @@ if WORK_MODE:
         ]
     )
 # }}}
-# Screens : layouts & widgets {{{
+_layout_common_opts = dict(
+    border_focus=PRIMARY_COLOR,
+    border_normal=DARK_NEUTRAL,
+    margin=MARGIN,
+    border_width=2,
+)
 layouts = [
     layout.Max(),
-    layout.Bsp(
-        border_focus=PRIMARY_COLOR,
-        border_width=2,
-        border_normal=DARK_NEUTRAL,
-        border_on_single=False,
-        margin=MARGIN,
-    ),
+    layout.Bsp(**_layout_common_opts),
     layout.Columns(
         fair=True,
-        border_focus=PRIMARY_COLOR,
         border_focus_stack=SECONDARY_COLOR,
-        border_normal=DARK_NEUTRAL,
         border_normal_stack=DARK_COLOR,
-        border_width=2,
-        margin=MARGIN,
+        **_layout_common_opts
     ),
 ]
+# Screens : widgets {{{
 
+graph_width = 22
 widget_defaults = dict(
     font="sans",
     fontsize=12,
     padding=3,
 )
-extension_defaults = widget_defaults.copy()
 
-graph_width = 22
 
+# backlight detection {{{
 DEVICES_ROOT = "/sys/devices/pci0000:00"
 VALID_BL_DEVICES = [
     "0000:00:02.0/drm/card0/card0-eDP-1/intel_backlight",
@@ -545,8 +543,10 @@ backlight_control = (
     if BL_DEVICE_NAME
     else []
 )
+# }}}
 
-gen_widgets_opts = dict(
+# widgets common styles {{{
+base_widget_style = dict(
     border_width=0,
     padding=0,
     width=graph_width,
@@ -555,7 +555,7 @@ gen_widgets_opts = dict(
     line_width=2,
     graph_color=LIGHT_NEUTRAL,
 )
-hdd_widgets_opts = dict(
+hdd_widgets_style = dict(
     width=int(graph_width / 2),
     border_width=0,
     graph_color=LIGHT_NEUTRAL,
@@ -572,74 +572,75 @@ extra_hdd_path = (
     if WORK_MODE
     else ("/home/fab/grosdisk" if gethostname() == "popo" else "/home")
 )
+# }}}
 
-bars_style = dict(
-    invert_mouse_wheel=True,
-    this_current_screen_border=PRIMARY_COLOR,
-    other_current_screen_border=PRIMARY_COLOR,
-    block_highlight_text_color="#000",
-    inactive=LIGHT_NEUTRAL,
-    active=PRIMARY_COLOR,
-    other_screen_border=SECONDARY_COLOR,
-    highlight_color=DARK_COLOR,
-    #     border_color=PRIMARY_COLOR,
-    background=DARK_NEUTRAL,
-    foreground=PRIMARY_COLOR,
-    highlight_method="block",
-    disable_drag=True,
-    rounded=True,
-    padding_x=5,
-    #     margin=MARGIN,
-    center_aligned=True,
-)
-tasklist_opts = dict(
-    theme_mode="fallback",
-    background=DARK_NEUTRAL,
-    center_aligned=True,
-    #     border=None,
-    icon_size=20,
-    padding_y=0,
-    highlight_method="block",
-    max_title_width=None,
-    markup_minimized="<s>{}</s>",
-    markup_floating="<i>{}</i>",
-    title_width_method="uniform",
-    markup_focused="<b>{}</b>",
-)
 
-basic_bar = [
-    widget.CurrentLayoutIcon(scale=0.7, background=SECONDARY_COLOR, foreground="#000"),
-    widget.GroupBox(**bars_style),
-    widget.Prompt(),
-    widget.TaskList(**tasklist_opts),
-]
-
-bottom_bar = (
-    basic_bar
-    + [
-        widget.Systray(background=DARK_NEUTRAL),
-    ]
-    + backlight_control
-    + [
-        widget.TextBox(text="🐏", padding=1, background=DARK_NEUTRAL),
-        widget.MemoryGraph(samples=graph_width * 2, **gen_widgets_opts),
-        #         widget.TextBox(text=" ", padding=1),
-        #         widget.NetGraph(samples=graph_width * 6, **gen_widgets_opts),
-        widget.TextBox(text=" ", padding=1, background=DARK_NEUTRAL),
-        widget.HDDGraph(path="/", **hdd_widgets_opts),
-        widget.TextBox(text=extra_hdd_icon, padding=1, background=DARK_NEUTRAL),
-        widget.HDDGraph(path=extra_hdd_path, **hdd_widgets_opts),
-        widget.Clock(
-            format="%a %d/%m %H:%M", background=SECONDARY_COLOR, foreground="#000"
+# Bar widgets  & screen definition {{{
+def getBasicBarWidgets():
+    return [
+        widget.CurrentLayoutIcon(
+            scale=0.7, background=SECONDARY_COLOR, foreground="#000"
+        ),
+        widget.GroupBox(
+            invert_mouse_wheel=True,
+            this_current_screen_border=PRIMARY_COLOR,
+            other_current_screen_border=PRIMARY_COLOR,
+            block_highlight_text_color="#000",
+            inactive=LIGHT_NEUTRAL,
+            active=PRIMARY_COLOR,
+            other_screen_border=SECONDARY_COLOR,
+            highlight_color=DARK_COLOR,
+            #     border_color=PRIMARY_COLOR,
+            background=DARK_NEUTRAL,
+            foreground=PRIMARY_COLOR,
+            highlight_method="block",
+            disable_drag=True,
+            rounded=True,
+            padding_x=5,
+            #     margin=MARGIN,
+            center_aligned=True,
+        ),
+        widget.Prompt(),
+        widget.TaskList(
+            theme_mode="fallback",
+            background=DARK_NEUTRAL,
+            center_aligned=True,
+            #     border=None,
+            icon_size=20,
+            padding_y=0,
+            highlight_method="block",
+            max_title_width=None,
+            markup_minimized="<s>{}</s>",
+            markup_floating="<i>{}</i>",
+            title_width_method="uniform",
+            markup_focused="<b>{}</b>",
         ),
     ]
-)
 
 
 screens = [
     Screen(
         bottom=bar.Bar(
-            bottom_bar,
+            getBasicBarWidgets()
+            + [
+                widget.Systray(background=DARK_NEUTRAL),
+            ]
+            + backlight_control
+            + [
+                widget.TextBox(text="🐏", padding=1, background=DARK_NEUTRAL),
+                widget.MemoryGraph(samples=graph_width * 2, **base_widget_style),
+                #         widget.TextBox(text=" ", padding=1),
+                #         widget.NetGraph(samples=graph_width * 6, **gen_widgets_opts),
+                widget.TextBox(text=" ", padding=1, background=DARK_NEUTRAL),
+                widget.HDDGraph(path="/", **hdd_widgets_style),
+                widget.TextBox(text=extra_hdd_icon, padding=1, background=DARK_NEUTRAL),
+                widget.HDDGraph(path=extra_hdd_path, **hdd_widgets_style),
+                widget.Clock(
+                    format="%a %d/%m %H:%M",
+                    background=SECONDARY_COLOR,
+                    foreground="#000",
+                ),
+            ],
             24,
             opacity=0.75,
             margin=[int(MARGIN / 2), MARGIN * 2, int(MARGIN / 2), MARGIN * 2],
@@ -647,13 +648,15 @@ screens = [
     ),
     Screen(
         bottom=bar.Bar(
-            basic_bar,
+            getBasicBarWidgets(),
             24,
             opacity=0.75,
             margin=[int(MARGIN / 2), 64, int(MARGIN / 2), 64],
         ),
     ),
 ]  # }}}
+
+# }}}
 # Drag floating layouts. {{{
 mouse = [
     Drag(
@@ -747,12 +750,12 @@ opacity_exceptions = set(
     ["Blender", "Brave-browser", "Popcorn-Time", "ferdium", "Steam"]
 )
 opacity_overrides = {"ferdium": 0.8}
-# }}}
 sticky_windows: list[Match] = [
     Match(wm_class="xfce4-notifyd"),
 ]
 
 
+# }}}
 # Hooks {{{
 @hook.subscribe.client_new
 def new_client_hook(window):
@@ -760,7 +763,7 @@ def new_client_hook(window):
     is_background = False
     opacity = DEFAULT_OPACITY
     for cls in window.get_wm_class():
-        if cls == "Xfdesktop":
+        if cls == "Xfdesktop":  # or window.window.get_wm_type() == "desktop":
             is_background = True
         if cls in opacity_exceptions:
             opacity = opacity_overrides.get(cls, 1.0)
