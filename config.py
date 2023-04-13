@@ -779,8 +779,8 @@ def new_client_hook(window):
     if is_background:
         #         window.fullscreen = True
         #         window.keep_below()
+        _sticky_windows.add(window)
         window.floating = True
-    #         _sticky_windows.add(window)
     else:
         if (
             window.window.get_wm_transient_for()
@@ -802,7 +802,10 @@ _sticky_windows: set[Window] = set()
 @hook.subscribe.setgroup
 def move_sticky_windows():
     for window in _sticky_windows:
+        f = window.floating
+        window.floating = False
         window.togroup()
+        window.floating = f
 
 
 @hook.subscribe.client_killed
