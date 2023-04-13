@@ -105,7 +105,11 @@ def raiseFloatingWindows(qtile):
     """Raises floating windows to the top"""
     for g in qtile.groups:
         for window in g.windows:
-            if window.floating and not window.fullscreen:
+            if (
+                window.floating
+                and not window.fullscreen
+                and window.get_wm_type() != "desktop"
+            ):
                 window.bring_to_front()
 
 
