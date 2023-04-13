@@ -727,14 +727,16 @@ floating_types = set(
         "menu",
         "dropdown_menu",
         "popup_menu",
-        "tooltip" "dock",
+        "tooltip",
+        "dock",
+        "desktop",
     ]
 )
 # }}}
 # Misc {{{
 dgroups_key_binder = None
 dgroups_app_rules = []  # type: List
-# follow_mouse_focus = True
+follow_mouse_focus = True
 bring_front_click = True
 cursor_warp = False
 
@@ -775,9 +777,10 @@ def new_client_hook(window):
     window.opacity = opacity
 
     if is_background:
+        #         window.fullscreen = True
+        #         window.keep_below()
         window.floating = True
-        window.keep_below()
-        window.minimized = True
+    #         _sticky_windows.add(window)
     else:
         if (
             window.window.get_wm_transient_for()
@@ -800,7 +803,6 @@ _sticky_windows: set[Window] = set()
 def move_sticky_windows():
     for window in _sticky_windows:
         window.togroup()
-    return
 
 
 @hook.subscribe.client_killed
