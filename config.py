@@ -540,7 +540,7 @@ backlight_control = (
             backlight_name=BL_DEVICE_NAME.rsplit("/", 1)[1],
             background=DARK_NEUTRAL,
             format="  {percent:2.0%}",
-            change_command="brightnessctl s {0}%",
+            change_command="sudo brightnessctl s {0}%",
             step=2,
         ),
     ]
